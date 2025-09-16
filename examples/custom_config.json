@@ -1,0 +1,45 @@
+{
+  "_metadata": {
+    "description": "Example custom configuration for Texterify Language Processor",
+    "version": "1.0.0",
+    "last_updated": "2025-09-16",
+    "author": "Example User"
+  },
+  "_instructions": {
+    "how_to_use": "This is an example of how to customize language mappings and settings",
+    "copy_and_modify": "Copy this file and modify it for your specific needs"
+  },
+  "language_mappings": {
+    "en": "english_translations.json",
+    "tr": "turkish_translations.json",
+    "fr": "french_translations.json",
+    "de": "german_translations.json",
+    "es": "spanish_translations.json"
+  },
+  "settings": {
+    "case_sensitive": false,
+    "preserve_extensions": false,
+    "backup_original": false,
+    "output_format": {
+      "date_format": "%Y%m%d",
+      "base_filename": "my_app_languages",
+      "extension": ".zip"
+    }
+  },
+  "examples": {
+    "adding_more_languages": {
+      "it": "italian_translations.json",
+      "pt": "portuguese_translations.json",
+      "zh": "chinese_translations.json"
+    },
+    "using_uuid_format": {
+      "en": "24c9b00d-d028-4e04-a1aa-f04d2dcae2c3.json",
+      "tr": "26c7ace9-13fc-43b8-9988-2384fe670d03.json"
+    },
+    "custom_output_format": {
+      "date_format": "%Y-%m-%d_%H%M",
+      "base_filename": "production_deploy",
+      "extension": ".zip"
+    }
+  }
+}

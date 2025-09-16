@@ -1,0 +1,25 @@
+# Texterify Language Processor - Requirements
+# 
+# This project uses only Python standard library!
+# No external dependencies are required for core functionality.
+#
+# Minimum Python version: 3.7+
+#
+# Development dependencies (optional):
+# Uncomment the lines below if you want to contribute to development
+
+# Testing
+# pytest>=6.0.0
+# pytest-cov>=2.12.0
+
+# Code formatting and linting
+# black>=21.0.0
+# flake8>=3.9.0
+# isort>=5.9.0
+
+# Documentation
+# mkdocs>=1.2.0
+# mkdocs-material>=7.0.0
+
+# Type checking (optional)
+# mypy>=0.910

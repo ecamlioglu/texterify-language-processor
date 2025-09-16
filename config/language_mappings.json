@@ -1,0 +1,37 @@
+{
+  "_metadata": {
+    "description": "Language file mapping configuration for Texterify Language Processor",
+    "version": "1.0.0",
+    "last_updated": "2025-09-16",
+    "author": "Texterify Language Processor Team"
+  },
+  "_instructions": {
+    "how_to_use": "Define language codes as keys and their UUID target filenames as values",
+    "example": "\"en\": \"24c9b00d-d028-4e04-a1aa-f04d2dcae2c3.json\"",
+    "note": "The processor will look for files with the key name (any extension) and rename them to the value"
+  },
+  "language_mappings": {
+    "en": "24c9b00d-d028-4e04-a1aa-f04d2dcae2c3.json",
+    "tr": "26c7ace9-13fc-43b8-9988-2384fe670d03.json"
+  },
+  "settings": {
+    "case_sensitive": false,
+    "preserve_extensions": false,
+    "backup_original": false,
+    "output_format": {
+      "date_format": "%d_%m",
+      "base_filename": "lang_files",
+      "extension": ".zip"
+    }
+  },
+  "examples": {
+    "adding_new_language": {
+      "example": "\"fr\": \"12345678-1234-1234-1234-123456789abc.json\"",
+      "description": "Add French language mapping"
+    },
+    "custom_output_name": {
+      "example": "\"es\": \"spanish_translations.json\"",
+      "description": "Use custom filename instead of UUID"
+    }
+  }
+}
