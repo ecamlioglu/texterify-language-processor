@@ -17,9 +17,9 @@ from pathlib import Path
 # Import version information
 sys.path.append(str(Path(__file__).parent.parent))
 # Import the new architecture
-from texterify_processor import ProcessorController
-from texterify_processor.utils.console_output import ConsoleOutput
-from version import get_version_string
+from texterify_processor import ProcessorController  # noqa: E402
+from texterify_processor.utils.console_output import ConsoleOutput  # noqa: E402
+from version import get_version_string  # noqa: E402
 
 
 class TexterifyProcessor:
@@ -46,7 +46,9 @@ class TexterifyProcessor:
 def main():
     """Main entry point for the CLI application"""
     parser = argparse.ArgumentParser(
-        description=f"{get_version_string()} - Professional language file processing tool",
+        description=(
+            f"{get_version_string()} - Professional language file processing tool"
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

@@ -17,15 +17,18 @@ from pathlib import Path
 # Add the project root to the path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from texterify_processor import ProcessorController
-from texterify_processor.utils.console_output import ConsoleOutput
-from version import get_version_string
+# Import after path modification
+from texterify_processor import ProcessorController  # noqa: E402
+from texterify_processor.utils.console_output import ConsoleOutput  # noqa: E402
+from version import get_version_string  # noqa: E402
 
 
 def create_argument_parser() -> argparse.ArgumentParser:
     """Create and configure the argument parser."""
     parser = argparse.ArgumentParser(
-        description=f"{get_version_string()} - Professional language file processing tool",
+        description=(
+            f"{get_version_string()} - Professional language file processing tool"
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

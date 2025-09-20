@@ -2,10 +2,9 @@
 
 import tempfile
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
 
 from ..models.archive import ArchiveInfo
-from ..models.config import ProcessingConfig
 from ..models.result import ProcessingResult
 from ..services.archive_service import ArchiveService
 from ..services.config_service import ConfigService
@@ -97,7 +96,7 @@ class ProcessorController:
 
         return UserInteraction.get_conflict_resolution(existing_filename)
 
-    def _get_output_filename(self, resolution: ConflictResolution) -> tuple[str, bool]:
+    def _get_output_filename(self, resolution: ConflictResolution) -> Tuple[str, bool]:
         """Get output filename based on conflict resolution."""
         if resolution == ConflictResolution.ADD_COUNTER:
             filename = self.output_service.generate_output_filename(use_counter=True)

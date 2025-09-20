@@ -4,7 +4,6 @@ Integration tests for Texterify Language Processor
 """
 
 import json
-import os
 import subprocess
 import sys
 import tempfile
@@ -15,9 +14,9 @@ from unittest.mock import patch
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-from test_helpers import TexterifyProcessor
+from test_helpers import TexterifyProcessor  # noqa: E402
 
-from texterify_processor import ProcessorController
+from texterify_processor import ProcessorController  # noqa: E402
 
 
 class TestEndToEndProcessing(unittest.TestCase):
@@ -274,7 +273,7 @@ class TestErrorHandling(unittest.TestCase):
     def test_empty_zip_file(self):
         """Test handling of empty zip files"""
         empty_zip = self.temp_path / "empty.zip"
-        with zipfile.ZipFile(empty_zip, "w") as zf:
+        with zipfile.ZipFile(empty_zip, "w"):
             pass  # Create empty zip
 
         processor = TexterifyProcessor(str(empty_zip))

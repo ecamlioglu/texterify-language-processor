@@ -3,7 +3,6 @@
 Test runner for Texterify Language Processor
 """
 
-import os
 import sys
 import unittest
 from pathlib import Path

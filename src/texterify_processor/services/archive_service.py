@@ -1,9 +1,8 @@
 """Service for handling archive operations."""
 
-import tempfile
 import zipfile
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 from ..models.archive import ArchiveInfo
 from ..models.config import ProcessingConfig

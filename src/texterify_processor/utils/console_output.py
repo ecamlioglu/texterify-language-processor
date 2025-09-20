@@ -1,6 +1,5 @@
 """Utility for console output formatting."""
 
-import sys
 from pathlib import Path
 from typing import List
 

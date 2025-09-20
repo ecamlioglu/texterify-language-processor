@@ -4,7 +4,6 @@ Test suite for Texterify Language Processor
 """
 
 import json
-import os
 import sys
 import tempfile
 import unittest
@@ -13,11 +12,9 @@ from pathlib import Path
 
 # Add src to path to import the processor
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-from test_helpers import TexterifyProcessor
+from test_helpers import TexterifyProcessor  # noqa: E402
 
-from texterify_processor import ProcessorController
-from texterify_processor.models.config import ProcessingConfig
-from texterify_processor.services.config_service import ConfigService
+from texterify_processor import ProcessorController  # noqa: E402
 
 
 class TestTexterifyProcessor(unittest.TestCase):
