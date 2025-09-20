@@ -57,7 +57,7 @@ jobs:
       run: |
         python -c "import sys; print(f'Python {sys.version}')"
         python get_version.py
-        ls -la
+        python -c "import os; print('\\n'.join(os.listdir('.')))"
 
     - name: Run tests
       run: |
@@ -230,7 +230,7 @@ jobs:
         echo "2" | python ../src/texterify_processor.py sample_texterify_export.zip --config custom_config.json
         
         # Verify outputs
-        ls -la *.zip
+        python -c "import glob; print('\\n'.join(glob.glob('*.zip')))"
         echo "Integration tests completed successfully"
 
   release:
