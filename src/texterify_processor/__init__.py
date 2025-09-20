@@ -10,8 +10,15 @@ Author: Texterify Language Processor Team
 License: MIT
 """
 
+# Import main function from the legacy entry point
+import sys
+from pathlib import Path
+
 from .controllers.processor_controller import ProcessorController
 from .models.config import ProcessingConfig
 from .models.result import ProcessingResult
 
-__all__ = ["ProcessorController", "ProcessingConfig", "ProcessingResult"]
+sys.path.append(str(Path(__file__).parent.parent))
+from texterify_processor import main  # noqa: E402
+
+__all__ = ["ProcessorController", "ProcessingConfig", "ProcessingResult", "main"]

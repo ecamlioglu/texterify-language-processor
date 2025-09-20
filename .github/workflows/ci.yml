@@ -226,6 +226,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install build twine
 
+    - name: Setup project
+      run: |
+        # Run project setup to verify environment
+        python setup_project.py
+
     - name: Build Python package
       run: |
         # Build wheel and source distribution
