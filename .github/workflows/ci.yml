@@ -325,7 +325,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test, code-quality, build, integration-test]
     if: github.ref == 'refs/heads/develop'
-    # environment: development  # Uncomment when you set up environments in GitHub
+    environment: development
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -337,19 +337,35 @@ jobs:
         path: dist/
 
     - name: Deploy to development environment
+      env:
+        DEPLOYMENT_URL: ${{ secrets.DEV_DEPLOYMENT_URL }}
+        API_KEY: ${{ secrets.DEV_API_KEY }}
       run: |
-        echo "Deploying to development environment..."
-        echo "Artifacts available:"
+        echo "🚀 Deploying to development environment..."
+        echo "📦 Artifacts available:"
         ls -la dist/
-        # Add your deployment logic here
-        # For example: upload to development server, update package registry, etc.
+        
+        # Example deployment logic (customize based on your needs):
+        # 1. Upload to development server
+        # curl -X POST "$DEPLOYMENT_URL/deploy" \
+        #   -H "Authorization: Bearer $API_KEY" \
+        #   -F "package=@dist/texterify-language-processor.tar.gz"
+        
+        # 2. Or publish to development package registry
+        # pip install twine
+        # twine upload --repository-url "$DEV_PYPI_URL" dist/*
+        
+        # 3. Or deploy to development server via SSH
+        # scp dist/* user@dev-server:/path/to/deployment/
+        
+        echo "✅ Development deployment completed!"
 
   release:
     name: Release
     runs-on: ubuntu-latest
     needs: [test, code-quality, build, integration-test]
     if: github.event_name == 'release'
-    # environment: production  # Uncomment when you set up environments in GitHub
+    environment: production
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -372,11 +388,34 @@ jobs:
         prerelease: false
 
     - name: Deploy to production
+      env:
+        PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        PROD_DEPLOYMENT_URL: ${{ secrets.PROD_DEPLOYMENT_URL }}
+        PROD_API_KEY: ${{ secrets.PROD_API_KEY }}
       run: |
-        echo "Deploying to production environment..."
-        echo "Release version: ${{ github.event.release.tag_name }}"
-        # Add your production deployment logic here
-        # For example: publish to PyPI, update package managers, etc.
+        echo "🚀 Deploying to production environment..."
+        echo "📦 Release version: ${{ github.event.release.tag_name }}"
+        
+        # Example production deployment options:
+        
+        # Option 1: Publish to PyPI (Python Package Index)
+        # pip install twine
+        # twine upload --username __token__ --password $PYPI_TOKEN dist/*
+        
+        # Option 2: Deploy to production server
+        # curl -X POST "$PROD_DEPLOYMENT_URL/deploy" \
+        #   -H "Authorization: Bearer $PROD_API_KEY" \
+        #   -F "package=@dist/texterify-language-processor.tar.gz" \
+        #   -F "version=${{ github.event.release.tag_name }}"
+        
+        # Option 3: Update package managers (npm, etc.)
+        # npm publish dist/package.tgz
+        
+        # Option 4: Deploy to cloud services (AWS, Azure, GCP)
+        # aws s3 cp dist/ s3://your-bucket/releases/ --recursive
+        
+        echo "✅ Production deployment completed!"
+        echo "🎉 Version ${{ github.event.release.tag_name }} is now live!"
 
   notify:
     name: Notify Team
