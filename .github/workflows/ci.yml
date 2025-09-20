@@ -212,6 +212,9 @@ jobs:
     name: Build Distribution
     runs-on: ubuntu-latest
     needs: [test, code-quality, security, performance]
+    permissions:
+      contents: read
+      packages: write
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -366,6 +369,10 @@ jobs:
     needs: [test, code-quality, build, integration-test]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: production
+    permissions:
+      contents: write
+      packages: write
+      pull-requests: read
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -386,6 +393,11 @@ jobs:
         echo "tag=v$VERSION" >> $GITHUB_OUTPUT
         echo "📦 Version: $VERSION"
 
+    - name: Setup GitHub CLI
+      run: |
+        gh --version
+        echo "GitHub CLI is ready"
+
     - name: Check if release exists
       id: check_release
       run: |
@@ -399,8 +411,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Create GitHub Release
+    - name: Create GitHub Release (Action Method)
       if: steps.check_release.outputs.exists == 'false'
+      id: create_release_action
+      continue-on-error: true
       uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -451,7 +465,72 @@ jobs:
         prerelease: false
         generate_release_notes: true
 
+    - name: Create GitHub Release (CLI Fallback)
+      if: steps.check_release.outputs.exists == 'false' && steps.create_release_action.outcome == 'failure'
+      run: |
+        echo "🔄 Action method failed, trying GitHub CLI method..."
+        
+        # Create release with GitHub CLI
+        gh release create "${{ steps.version.outputs.tag }}" \
+          --title "Texterify Language Processor ${{ steps.version.outputs.version }}" \
+          --notes "## 🚀 Texterify Language Processor ${{ steps.version.outputs.version }}
+          
+          ### 📦 What's Included
+          - **Source Distribution**: \`texterify language processor-${{ steps.version.outputs.version }}.tar.gz\`
+          - **Wheel Package**: \`texterify_language_processor-${{ steps.version.outputs.version }}-py3-none-any.whl\`
+          - **Portable Archive**: \`texterify-language-processor.tar.gz\`
+          - **Windows Package**: \`texterify-language-processor-windows.zip\`
+          
+          ### 🛠️ Installation
+          \`\`\`bash
+          # Install from wheel (recommended)
+          pip install texterify_language_processor-${{ steps.version.outputs.version }}-py3-none-any.whl
+          
+          # Or install from source
+          pip install \"texterify language processor-${{ steps.version.outputs.version }}.tar.gz\"
+          \`\`\`
+          
+          ### 📋 Usage
+          \`\`\`bash
+          # Basic usage
+          python -m texterify_processor \"your_export.zip\"
+          
+          # With custom config
+          python -m texterify_processor \"export.zip\" --config \"custom.json\"
+          \`\`\`
+          
+          ### ✅ CI/CD Status
+          - ✅ All tests passed
+          - ✅ Code quality checks passed
+          - ✅ Security scan completed
+          - ✅ Performance tests passed
+          - ✅ Integration tests passed
+          
+          **Full Changelog**: https://github.com/ecamlioglu/texterify-language-processor/compare/${{ github.event.before }}...${{ github.sha }}" \
+          "dist/texterify language processor-${{ steps.version.outputs.version }}.tar.gz" \
+          "dist/texterify_language_processor-${{ steps.version.outputs.version }}-py3-none-any.whl" \
+          "dist/texterify-language-processor.tar.gz" \
+          "dist/texterify-language-processor-windows.zip"
+        
+        echo "✅ Release created successfully with GitHub CLI!"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Verify Release Creation
+      if: steps.check_release.outputs.exists == 'false'
+      run: |
+        if gh release view "${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+          echo "✅ Release ${{ steps.version.outputs.tag }} created successfully!"
+          echo "🔗 Release URL: https://github.com/${{ github.repository }}/releases/tag/${{ steps.version.outputs.tag }}"
+        else
+          echo "❌ Release creation failed!"
+          exit 1
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Create GitHub Deployment
+      if: steps.check_release.outputs.exists == 'false'
       uses: actions/github-script@v7
       with:
         script: |
