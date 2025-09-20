@@ -18,7 +18,8 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 # Import the new architecture
 from texterify_processor import ProcessorController  # noqa: E402
-from texterify_processor.utils.console_output import ConsoleOutput  # noqa: E402
+from texterify_processor.utils.console_output import \
+    ConsoleOutput  # noqa: E402
 from version import get_version_string  # noqa: E402
 
 
