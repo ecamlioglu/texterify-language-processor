@@ -107,34 +107,38 @@ class ProcessorController:
 
     def _process_archive(self, result: ProcessingResult, output_path: Path) -> bool:
         """Process the archive and create output."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
+        try:
+            with tempfile.TemporaryDirectory() as temp_dir:
+                temp_path = Path(temp_dir)
 
-            # Extract archive
-            ConsoleOutput.print_extraction_start()
-            if not ArchiveService.extract_archive(self.zip_path, temp_path):
-                result.error_message = "Failed to extract archive"
-                return False
+                # Extract archive
+                ConsoleOutput.print_extraction_start()
+                if not ArchiveService.extract_archive(self.zip_path, temp_path):
+                    result.error_message = "Failed to extract archive"
+                    return False
 
-            # Find and rename language files
-            file_operations = self.file_service.find_and_rename_files(temp_path)
+                # Find and rename language files
+                file_operations = self.file_service.find_and_rename_files(temp_path)
 
-            if not file_operations:
-                ConsoleOutput.print_no_language_files_warning(
-                    list(self.config.language_mappings.keys())
-                )
-                result.error_message = "No language files found to process"
-                return False
+                if not file_operations:
+                    ConsoleOutput.print_no_language_files_warning(
+                        list(self.config.language_mappings.keys())
+                    )
+                    result.error_message = "No language files found to process"
+                    return False
 
-            # Add operations to result
-            result.file_operations = file_operations
+                # Add operations to result
+                result.file_operations = file_operations
 
-            # Create output archive
-            if not ArchiveService.create_archive(temp_path, output_path):
-                result.error_message = "Failed to create output archive"
-                return False
+                # Create output archive
+                if not ArchiveService.create_archive(temp_path, output_path):
+                    result.error_message = "Failed to create output archive"
+                    return False
 
-            return True
+                return True
+        except Exception as e:
+            result.error_message = f"Processing error: {str(e)}"
+            return False
 
     def _extract_counter_from_filename(self, filename: str) -> Optional[int]:
         """Extract counter value from filename."""

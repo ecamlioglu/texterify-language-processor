@@ -15,7 +15,7 @@ class ConsoleOutput:
         """Check if the current environment supports Unicode emojis."""
         try:
             # Test if we can encode a simple emoji
-            "🚀".encode(sys.stdout.encoding or 'utf-8')
+            "🚀".encode(sys.stdout.encoding or "utf-8")
             return True
         except (UnicodeEncodeError, UnicodeError):
             return False
@@ -25,27 +25,27 @@ class ConsoleOutput:
         """Get appropriate symbols based on Unicode support."""
         if ConsoleOutput._supports_unicode():
             return {
-                'rocket': '🚀',
-                'folder': '📁',
-                'globe': '🌐',
-                'warning': '⚠️ ',
-                'package': '📦',
-                'check': '✓',
-                'info': '📋',
-                'lightbulb': '💡',
-                'note': '📝'
+                "rocket": "🚀",
+                "folder": "📁",
+                "globe": "🌐",
+                "warning": "⚠️ ",
+                "package": "📦",
+                "check": "✓",
+                "info": "📋",
+                "lightbulb": "💡",
+                "note": "📝",
             }
         else:
             return {
-                'rocket': '[INFO]',
-                'folder': '[FILE]',
-                'globe': '[LANG]',
-                'warning': '[WARN]',
-                'package': '[ARCH]',
-                'check': '[OK]',
-                'info': '[INFO]',
-                'lightbulb': '[TIP]',
-                'note': '[NOTE]'
+                "rocket": "[INFO]",
+                "folder": "[FILE]",
+                "globe": "[LANG]",
+                "warning": "[WARN]",
+                "package": "[ARCH]",
+                "check": "[OK]",
+                "info": "[INFO]",
+                "lightbulb": "[TIP]",
+                "note": "[NOTE]",
             }
 
     @staticmethod
