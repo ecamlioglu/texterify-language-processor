@@ -152,4 +152,5 @@ class ConsoleOutput:
     def print_renamed_file(original_name: str, new_name: str):
         """Print file rename operation."""
         symbols = ConsoleOutput._get_symbols()
-        print(f"{symbols['check']} Renamed: {original_name} → {new_name}")
+        arrow = "→" if ConsoleOutput._supports_unicode() else "->"
+        print(f"{symbols['check']} Renamed: {original_name} {arrow} {new_name}")

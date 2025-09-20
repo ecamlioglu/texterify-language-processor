@@ -111,7 +111,8 @@ class TestEndToEndProcessing(unittest.TestCase):
 
     @patch("builtins.input", return_value="2")  # Choose "add counter"
     @patch(
-        "texterify_processor.utils.user_interaction.UserInteraction.get_conflict_resolution"
+        "texterify_processor.utils.user_interaction.UserInteraction"
+        ".get_conflict_resolution"
     )
     def test_complete_processing_flow(self, mock_conflict_resolution, mock_input):
         """Test complete processing flow from start to finish"""
@@ -171,7 +172,8 @@ class TestEndToEndProcessing(unittest.TestCase):
             self.assertEqual(tr_data["app.title"], "Uygulamam")
 
     @patch(
-        "texterify_processor.utils.user_interaction.UserInteraction.get_conflict_resolution"
+        "texterify_processor.utils.user_interaction.UserInteraction"
+        ".get_conflict_resolution"
     )
     def test_multiple_file_processing(self, mock_conflict_resolution):
         """Test processing multiple files in sequence"""

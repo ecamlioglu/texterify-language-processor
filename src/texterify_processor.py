@@ -91,8 +91,8 @@ Conflict Resolution:
     # Show help if no arguments provided
     if len(sys.argv) == 1:
         parser.print_help()
-        print("\n💡 Tip: You can drag and drop a zip file onto this script!")
-        print(f"🔧 {get_version_string()}")
+        print("\n[TIP] Tip: You can drag and drop a zip file onto this script!")
+        print(f"[INFO] {get_version_string()}")
         return
 
     args = parser.parse_args()
@@ -102,9 +102,9 @@ Conflict Resolution:
     success = processor.process()
 
     if success:
-        print("\n🎉 Processing completed successfully!")
+        print("\n[SUCCESS] Processing completed successfully!")
     else:
-        print("\n💥 Processing failed!")
+        print("\n[ERROR] Processing failed!")
         sys.exit(1)
 
 
