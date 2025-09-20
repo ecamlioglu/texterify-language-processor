@@ -88,18 +88,19 @@ class ConsoleOutput:
 
         if result.output_file:
             print(f"{symbols['package']} Output: {result.output_file.name}")
-            print(f"📍 Location: {result.output_file.parent}")
+            print(f"{symbols['folder']} Location: {result.output_file.parent}")
 
         if result.used_counter and result.counter_value:
-            print(f"🔢 Counter: {result.counter_value}")
+            print(f"{symbols['info']} Counter: {result.counter_value}")
 
     @staticmethod
     def _print_error_result(result: Any):
         """Print error result."""
+        symbols = ConsoleOutput._get_symbols()
         if result.error_message:
-            print(f"❌ Error: {result.error_message}")
+            print(f"{symbols['warning']} Error: {result.error_message}")
         else:
-            print("❌ Processing failed")
+            print(f"{symbols['warning']} Processing failed")
 
     @staticmethod
     def print_no_language_files_warning(configured_languages: List[str]):
@@ -127,12 +128,13 @@ class ConsoleOutput:
         if success:
             print(f"\n{symbols['check']} Processing completed successfully!")
         else:
-            print("\n❌ Processing failed!")
+            print(f"\n{symbols['warning']} Processing failed!")
 
     @staticmethod
     def print_error(message: str):
         """Print error message."""
-        print(f"❌ Error: {message}")
+        symbols = ConsoleOutput._get_symbols()
+        print(f"{symbols['warning']} Error: {message}")
 
     @staticmethod
     def print_warning(message: str):

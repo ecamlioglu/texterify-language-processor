@@ -109,15 +109,17 @@ class TestEndToEndProcessing(unittest.TestCase):
         with open(self.test_config, "w", encoding="utf-8") as f:
             json.dump(config, f, indent=2, ensure_ascii=False)
 
-    @patch("builtins.input", return_value="2")  # Choose "add counter"  
-    @patch("texterify_processor.utils.user_interaction.UserInteraction.get_conflict_resolution")
+    @patch("builtins.input", return_value="2")  # Choose "add counter"
+    @patch(
+        "texterify_processor.utils.user_interaction.UserInteraction.get_conflict_resolution"
+    )
     def test_complete_processing_flow(self, mock_conflict_resolution, mock_input):
         """Test complete processing flow from start to finish"""
         from texterify_processor.utils.user_interaction import ConflictResolution
-        
+
         # Mock conflict resolution to always return ADD_COUNTER
         mock_conflict_resolution.return_value = ConflictResolution.ADD_COUNTER
-        
+
         # Initialize processor
         controller = ProcessorController(str(self.test_zip), str(self.test_config))
 
@@ -168,14 +170,16 @@ class TestEndToEndProcessing(unittest.TestCase):
             self.assertEqual(en_data["app.title"], "My Application")
             self.assertEqual(tr_data["app.title"], "Uygulamam")
 
-    @patch("texterify_processor.utils.user_interaction.UserInteraction.get_conflict_resolution")
+    @patch(
+        "texterify_processor.utils.user_interaction.UserInteraction.get_conflict_resolution"
+    )
     def test_multiple_file_processing(self, mock_conflict_resolution):
         """Test processing multiple files in sequence"""
         from texterify_processor.utils.user_interaction import ConflictResolution
-        
+
         # Mock conflict resolution to always return ADD_COUNTER
         mock_conflict_resolution.return_value = ConflictResolution.ADD_COUNTER
-        
+
         processor = TexterifyProcessor(str(self.test_zip), str(self.test_config))
         processor.output_dir = self.temp_path
 
