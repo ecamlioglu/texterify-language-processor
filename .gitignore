@@ -9,3 +9,8 @@ __pycache__/*
 *.pyzw
 *.pyzwz
 *.pyzwzw
+venv/lib64
+venv/pyvenv.cfg
+venv/bin/python
+venv/bin/python3
+venv/bin/python3.12
