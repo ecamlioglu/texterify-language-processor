@@ -1,6 +1,6 @@
 # 🌐 Texterify Language Processor
 
-[![Python](https://img.shields.io/badge/Python-3.7%2B-blue.svg)](https://python.org)
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)]()
 [![Version](https://img.shields.io/badge/Version-2.1.0-orange.svg)](version.py)
@@ -25,7 +25,7 @@ A professional-grade command-line tool for processing **Texterify** language exp
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.7 or higher
+- Python 3.8 or higher
 - No additional dependencies required!
 
 ### Installation

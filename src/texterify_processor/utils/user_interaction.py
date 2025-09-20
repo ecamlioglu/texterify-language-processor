@@ -6,6 +6,7 @@ from typing import Optional
 
 class ConflictResolution(Enum):
     """Enum for conflict resolution choices."""
+
     OVERWRITE = 1
     ADD_COUNTER = 2
     CANCEL = 3
@@ -13,7 +14,7 @@ class ConflictResolution(Enum):
 
 class UserInteraction:
     """Utility class for user interactions."""
-    
+
     @staticmethod
     def get_conflict_resolution(existing_filename: str) -> Optional[ConflictResolution]:
         """Get user choice for handling file conflicts."""
@@ -22,11 +23,11 @@ class UserInteraction:
         print("1. Overwrite existing file")
         print("2. Add counter to create new file")
         print("3. Cancel operation")
-        
+
         while True:
             try:
                 choice = input("\nEnter your choice (1-3): ").strip()
-                
+
                 if choice == "1":
                     print("📝 Will overwrite existing file")
                     return ConflictResolution.OVERWRITE
@@ -38,23 +39,23 @@ class UserInteraction:
                     return ConflictResolution.CANCEL
                 else:
                     print("❌ Invalid choice. Please enter 1, 2, or 3.")
-                    
+
             except (EOFError, KeyboardInterrupt):
                 print("\n❌ Operation cancelled by user")
                 return ConflictResolution.CANCEL
-    
+
     @staticmethod
     def confirm_action(message: str, default: bool = True) -> bool:
         """Get user confirmation for an action."""
         suffix = " [Y/n]" if default else " [y/N]"
-        
+
         try:
             response = input(f"{message}{suffix}: ").strip().lower()
-            
+
             if not response:
                 return default
-            
-            return response in ['y', 'yes', 'true', '1']
-            
+
+            return response in ["y", "yes", "true", "1"]
+
         except (EOFError, KeyboardInterrupt):
             return False

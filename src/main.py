@@ -25,9 +25,9 @@ from version import get_version_string
 def create_argument_parser() -> argparse.ArgumentParser:
     """Create and configure the argument parser."""
     parser = argparse.ArgumentParser(
-        description=f'{get_version_string()} - Professional language file processing tool',
+        description=f"{get_version_string()} - Professional language file processing tool",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog='''
+        epilog="""
 Examples:
   python main.py "my_export.zip"
   python main.py "export.zip" --config "custom_mappings.json"
@@ -51,53 +51,47 @@ Conflict Resolution:
   1. Overwrite existing file
   2. Add counter to create new file (lang_files_DD_MM_N.zip)
   3. Cancel operation
-        '''
+        """,
     )
-    
+
     parser.add_argument(
-        'zip_file',
-        help='Path to the Texterify zip export file to process'
+        "zip_file", help="Path to the Texterify zip export file to process"
     )
-    
+
     parser.add_argument(
-        '--config', '-c',
-        help='Path to custom language mappings configuration file'
+        "--config", "-c", help="Path to custom language mappings configuration file"
     )
-    
-    parser.add_argument(
-        '--version',
-        action='version',
-        version=get_version_string()
-    )
-    
+
+    parser.add_argument("--version", action="version", version=get_version_string())
+
     return parser
 
 
 def main():
     """Main entry point for the CLI application."""
     parser = create_argument_parser()
-    
+
     # Show help if no arguments provided
     if len(sys.argv) == 1:
         parser.print_help()
         print("\n💡 Tip: You can drag and drop a zip file onto this script!")
         print(f"🔧 {get_version_string()}")
         return
-    
+
     try:
         args = parser.parse_args()
-        
+
         # Create and run the processor
         controller = ProcessorController(args.zip_file, args.config)
         result = controller.process()
-        
+
         # Display results
         ConsoleOutput.print_result(result)
         ConsoleOutput.print_completion_message(result.success)
-        
+
         if not result.success:
             sys.exit(1)
-            
+
     except ValueError as e:
         ConsoleOutput.print_error(str(e))
         sys.exit(1)

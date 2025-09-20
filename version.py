@@ -24,16 +24,19 @@ PROJECT_LICENSE = "MIT"
 PROJECT_URL = "https://github.com/ecamlioglu/texterify-language-processor"
 
 # Requirements
-PYTHON_MIN_VERSION = "3.7"
-PYTHON_RECOMMENDED_VERSION = "3.8+"
+PYTHON_MIN_VERSION = "3.8"
+PYTHON_RECOMMENDED_VERSION = "3.9+"
 
 # Build Information
 import datetime
+
 BUILD_DATE = datetime.datetime.now().strftime("%Y-%m-%d")
+
 
 def get_version_string():
     """Get formatted version string"""
     return f"{PROJECT_NAME} v{VERSION}"
+
 
 def get_full_version_info():
     """Get complete version information"""
@@ -49,8 +52,9 @@ def get_full_version_info():
         "url": PROJECT_URL,
         "python_min": PYTHON_MIN_VERSION,
         "python_recommended": PYTHON_RECOMMENDED_VERSION,
-        "build_date": BUILD_DATE
+        "build_date": BUILD_DATE,
     }
+
 
 def print_version_info():
     """Print formatted version information"""
@@ -58,6 +62,7 @@ def print_version_info():
     print(f"License: {PROJECT_LICENSE}")
     print(f"Python required: {PYTHON_MIN_VERSION}+")
     print(f"Build date: {BUILD_DATE}")
+
 
 if __name__ == "__main__":
     print_version_info()

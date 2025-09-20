@@ -28,12 +28,12 @@ class TexterifyProcessor:
     Legacy wrapper for backward compatibility.
     DEPRECATED: Use ProcessorController directly.
     """
-    
+
     def __init__(self, zip_path: str, config_path: str = None):
         """Initialize legacy processor."""
         self.controller = ProcessorController(zip_path, config_path)
         self.zip_path = Path(zip_path)
-    
+
     def process(self) -> bool:
         """Process using the new architecture."""
         try:
@@ -43,12 +43,13 @@ class TexterifyProcessor:
             ConsoleOutput.print_error(str(e))
             return False
 
+
 def main():
     """Main entry point for the CLI application"""
     parser = argparse.ArgumentParser(
-        description=f'{get_version_string()} - Professional language file processing tool',
+        description=f"{get_version_string()} - Professional language file processing tool",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog='''
+        epilog="""
 Examples:
   python texterify_processor.py "my_export.zip"
   python texterify_processor.py "export.zip" --config "custom_mappings.json"
@@ -72,43 +73,38 @@ Conflict Resolution:
   1. Overwrite existing file
   2. Add counter to create new file (lang_files_DD_MM_N.zip)
   3. Cancel operation
-        '''
+        """,
     )
-    
+
     parser.add_argument(
-        'zip_file',
-        help='Path to the Texterify zip export file to process'
+        "zip_file", help="Path to the Texterify zip export file to process"
     )
-    
+
     parser.add_argument(
-        '--config', '-c',
-        help='Path to custom language mappings configuration file'
+        "--config", "-c", help="Path to custom language mappings configuration file"
     )
-    
-    parser.add_argument(
-        '--version',
-        action='version',
-        version=get_version_string()
-    )
-    
+
+    parser.add_argument("--version", action="version", version=get_version_string())
+
     # Show help if no arguments provided
     if len(sys.argv) == 1:
         parser.print_help()
         print("\n💡 Tip: You can drag and drop a zip file onto this script!")
         print(f"🔧 {get_version_string()}")
         return
-    
+
     args = parser.parse_args()
-    
+
     # Process the file
     processor = TexterifyProcessor(args.zip_file, args.config)
     success = processor.process()
-    
+
     if success:
         print("\n🎉 Processing completed successfully!")
     else:
         print("\n💥 Processing failed!")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

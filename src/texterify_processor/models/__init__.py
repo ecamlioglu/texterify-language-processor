@@ -5,9 +5,9 @@ from .result import ProcessingResult, FileOperation
 from .archive import ArchiveInfo
 
 __all__ = [
-    'ProcessingConfig', 
-    'OutputFormat', 
-    'ProcessingResult', 
-    'FileOperation',
-    'ArchiveInfo'
+    "ProcessingConfig",
+    "OutputFormat",
+    "ProcessingResult",
+    "FileOperation",
+    "ArchiveInfo",
 ]
