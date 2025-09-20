@@ -3,20 +3,21 @@
 Integration tests for Texterify Language Processor
 """
 
-import unittest
-import tempfile
-import zipfile
 import json
 import os
-import sys
 import subprocess
+import sys
+import tempfile
+import unittest
+import zipfile
 from pathlib import Path
 from unittest.mock import patch
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-from texterify_processor import ProcessorController
 from test_helpers import TexterifyProcessor
+
+from texterify_processor import ProcessorController
 
 
 class TestEndToEndProcessing(unittest.TestCase):

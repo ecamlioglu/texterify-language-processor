@@ -10,8 +10,8 @@ Author: Texterify Language Processor Team
 License: MIT
 """
 
-import sys
 import argparse
+import sys
 from pathlib import Path
 
 # Add the project root to the path for imports

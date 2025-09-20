@@ -4,15 +4,15 @@ import tempfile
 from pathlib import Path
 from typing import Optional
 
+from ..models.archive import ArchiveInfo
 from ..models.config import ProcessingConfig
 from ..models.result import ProcessingResult
-from ..models.archive import ArchiveInfo
-from ..services.config_service import ConfigService
 from ..services.archive_service import ArchiveService
+from ..services.config_service import ConfigService
 from ..services.file_service import FileService
 from ..services.output_service import OutputService
-from ..utils.user_interaction import UserInteraction, ConflictResolution
 from ..utils.console_output import ConsoleOutput
+from ..utils.user_interaction import ConflictResolution, UserInteraction
 
 
 class ProcessorController:

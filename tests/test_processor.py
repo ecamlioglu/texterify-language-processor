@@ -3,20 +3,21 @@
 Test suite for Texterify Language Processor
 """
 
-import unittest
-import tempfile
-import zipfile
 import json
 import os
 import sys
+import tempfile
+import unittest
+import zipfile
 from pathlib import Path
 
 # Add src to path to import the processor
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+from test_helpers import TexterifyProcessor
+
 from texterify_processor import ProcessorController
 from texterify_processor.models.config import ProcessingConfig
 from texterify_processor.services.config_service import ConfigService
-from test_helpers import TexterifyProcessor
 
 
 class TestTexterifyProcessor(unittest.TestCase):
@@ -77,7 +78,7 @@ class TestTexterifyProcessor(unittest.TestCase):
     def test_processor_initialization(self):
         """Test processor initialization"""
         controller = ProcessorController(str(self.test_zip))
-        self.assertEqual(controller.zip_path, self.test_zip)
+        self.assertEqual(controller.zip_path, Path(self.test_zip).resolve())
         self.assertIsInstance(controller.config.language_mappings, dict)
 
     def test_processor_with_custom_config(self):
@@ -166,7 +167,7 @@ class TestVersionInfo(unittest.TestCase):
         project_root = Path(__file__).parent.parent
         sys.path.insert(0, str(project_root))
 
-        from version import VERSION, PROJECT_NAME, get_version_string
+        from version import PROJECT_NAME, VERSION, get_version_string
 
         self.assertIsInstance(VERSION, str)
         self.assertIsInstance(PROJECT_NAME, str)

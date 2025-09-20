@@ -3,9 +3,9 @@
 Test runner for Texterify Language Processor
 """
 
+import os
 import sys
 import unittest
-import os
 from pathlib import Path
 
 # Add src to path

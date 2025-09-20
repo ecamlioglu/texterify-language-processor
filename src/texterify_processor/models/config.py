@@ -1,8 +1,8 @@
 """Configuration models for the Texterify Language Processor."""
 
 from dataclasses import dataclass, field
-from typing import Dict, Optional
 from pathlib import Path
+from typing import Dict, Optional
 
 
 @dataclass

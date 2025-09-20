@@ -1,8 +1,8 @@
 """Domain models for the Texterify Language Processor."""
 
-from .config import ProcessingConfig, OutputFormat
-from .result import ProcessingResult, FileOperation
 from .archive import ArchiveInfo
+from .config import OutputFormat, ProcessingConfig
+from .result import FileOperation, ProcessingResult
 
 __all__ = [
     "ProcessingConfig",

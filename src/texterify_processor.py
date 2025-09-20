@@ -10,17 +10,16 @@ Author: Texterify Language Processor Team
 License: MIT
 """
 
-import sys
 import argparse
+import sys
 from pathlib import Path
 
 # Import version information
 sys.path.append(str(Path(__file__).parent.parent))
-from version import get_version_string
-
 # Import the new architecture
 from texterify_processor import ProcessorController
 from texterify_processor.utils.console_output import ConsoleOutput
+from version import get_version_string
 
 
 class TexterifyProcessor:
