@@ -18,7 +18,16 @@ from .controllers.processor_controller import ProcessorController
 from .models.config import ProcessingConfig
 from .models.result import ProcessingResult
 
+# Import main function from the legacy module (avoiding circular import)
 sys.path.append(str(Path(__file__).parent.parent))
-from texterify_processor import main  # noqa: E402
+import importlib.util
+
+spec = importlib.util.spec_from_file_location(
+    "texterify_processor_legacy",
+    Path(__file__).parent.parent / "texterify_processor.py",
+)
+legacy_module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(legacy_module)
+main = legacy_module.main
 
 __all__ = ["ProcessorController", "ProcessingConfig", "ProcessingResult", "main"]
