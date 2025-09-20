@@ -109,9 +109,15 @@ class TestEndToEndProcessing(unittest.TestCase):
         with open(self.test_config, "w", encoding="utf-8") as f:
             json.dump(config, f, indent=2, ensure_ascii=False)
 
-    @patch("builtins.input", return_value="2")  # Choose "add counter"
-    def test_complete_processing_flow(self, mock_input):
+    @patch("builtins.input", return_value="2")  # Choose "add counter"  
+    @patch("texterify_processor.utils.user_interaction.UserInteraction.get_conflict_resolution")
+    def test_complete_processing_flow(self, mock_conflict_resolution, mock_input):
         """Test complete processing flow from start to finish"""
+        from texterify_processor.utils.user_interaction import ConflictResolution
+        
+        # Mock conflict resolution to always return ADD_COUNTER
+        mock_conflict_resolution.return_value = ConflictResolution.ADD_COUNTER
+        
         # Initialize processor
         controller = ProcessorController(str(self.test_zip), str(self.test_config))
 
@@ -122,7 +128,7 @@ class TestEndToEndProcessing(unittest.TestCase):
         result = controller.process()
 
         # Should succeed
-        self.assertTrue(result.success)
+        self.assertTrue(result.success, f"Processing failed: {result.error_message}")
 
         # Check that output file was created
         output_files = list(self.temp_path.glob("integration_test_*.zip"))
@@ -162,8 +168,14 @@ class TestEndToEndProcessing(unittest.TestCase):
             self.assertEqual(en_data["app.title"], "My Application")
             self.assertEqual(tr_data["app.title"], "Uygulamam")
 
-    def test_multiple_file_processing(self):
+    @patch("texterify_processor.utils.user_interaction.UserInteraction.get_conflict_resolution")
+    def test_multiple_file_processing(self, mock_conflict_resolution):
         """Test processing multiple files in sequence"""
+        from texterify_processor.utils.user_interaction import ConflictResolution
+        
+        # Mock conflict resolution to always return ADD_COUNTER
+        mock_conflict_resolution.return_value = ConflictResolution.ADD_COUNTER
+        
         processor = TexterifyProcessor(str(self.test_zip), str(self.test_config))
         processor.output_dir = self.temp_path
 
@@ -174,7 +186,7 @@ class TestEndToEndProcessing(unittest.TestCase):
             # Process same file multiple times
             for i in range(3):
                 result = processor.process()
-                self.assertTrue(result)
+                self.assertTrue(result, f"Processing failed on iteration {i}")
 
         # Should have output files with different counters
         output_files = list(self.temp_path.glob("integration_test_*_*.zip"))
