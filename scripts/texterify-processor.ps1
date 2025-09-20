@@ -4,11 +4,11 @@
 # License: MIT
 
 param(
-    [Parameter(Mandatory=$true, Position=0, HelpMessage="Path to the zip file to process")]
+    [Parameter(Mandatory=$false, Position=0, HelpMessage="Path to the zip file to process")]
     [string]$ZipFile,
     
     [Parameter(HelpMessage="Show detailed output")]
-    [switch]$Verbose,
+    [switch]$Detailed,
     
     [Parameter(HelpMessage="Show version information")]
     [switch]$Version,
@@ -124,7 +124,7 @@ function Show-Usage {
     Write-Host ""
     Write-Host "Parameters:" -ForegroundColor Yellow
     Write-Host "  -ZipFile <path>      Path to the Texterify zip export file" -ForegroundColor Gray
-    Write-Host "  -Verbose             Show detailed output" -ForegroundColor Gray
+    Write-Host "  -Detailed            Show detailed output" -ForegroundColor Gray
     Write-Host "  -Version             Show version information" -ForegroundColor Gray
     Write-Host "  -Help                Show this help message" -ForegroundColor Gray
     Write-Host ""
@@ -268,7 +268,7 @@ try {
 catch {
     Write-Host ""
     Write-Error "An unexpected error occurred: $($_.Exception.Message)"
-    if ($Verbose) {
+    if ($Detailed) {
         Write-Host $_.Exception.StackTrace -ForegroundColor Red
     }
     Write-Host ""
