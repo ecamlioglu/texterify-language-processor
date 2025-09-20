@@ -11,6 +11,8 @@ License: MIT
 """
 
 # Import main function from the legacy entry point
+import importlib.util
+
 import sys
 from pathlib import Path
 
@@ -20,7 +22,6 @@ from .models.result import ProcessingResult
 
 # Import main function from the legacy module (avoiding circular import)
 sys.path.append(str(Path(__file__).parent.parent))
-import importlib.util
 
 spec = importlib.util.spec_from_file_location(
     "texterify_processor_legacy",
