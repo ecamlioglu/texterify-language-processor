@@ -166,10 +166,18 @@ jobs:
         # Check for known security vulnerabilities
         safety check
 
-  build:
-    name: Build Distribution
+    - name: Upload security reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: security-reports
+        path: bandit-report.json
+        retention-days: 7
+
+  performance:
+    name: Performance Tests
     runs-on: ubuntu-latest
-    needs: [test, code-quality]
+    needs: test
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -179,22 +187,96 @@ jobs:
       with:
         python-version: '3.9'
 
-    - name: Create distribution
+    - name: Install performance testing tools
       run: |
-        # Create a distributable package
+        pip install memory-profiler psutil
+
+    - name: Run performance tests
+      run: |
+        # Test memory usage and execution time
+        echo "Testing performance with sample file..."
+        time python src/texterify_processor.py --version
+        echo "Performance test completed"
+
+    - name: Memory usage test
+      run: |
+        # Test memory usage during processing
+        python -c "
+        import psutil
+        import os
+        process = psutil.Process(os.getpid())
+        print(f'Memory usage: {process.memory_info().rss / 1024 / 1024:.2f} MB')
+        "
+
+  build:
+    name: Build Distribution
+    runs-on: ubuntu-latest
+    needs: [test, code-quality, security, performance]
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
+
+    - name: Build Python package
+      run: |
+        # Build wheel and source distribution
+        python -m build
+
+    - name: Create portable distribution
+      run: |
+        # Create a distributable package for easy deployment
         mkdir -p dist
         tar -czf dist/texterify-language-processor.tar.gz \
           --exclude='.git*' \
           --exclude='dist' \
           --exclude='__pycache__' \
           --exclude='*.pyc' \
+          --exclude='venv' \
+          --exclude='.venv' \
+          --exclude='build' \
+          --exclude='*.egg-info' \
           .
 
+    - name: Create Windows distribution
+      run: |
+        # Create a Windows-specific distribution
+        mkdir -p dist/windows
+        cp -r src/ dist/windows/
+        cp -r scripts/ dist/windows/
+        cp -r config/ dist/windows/
+        cp -r examples/ dist/windows/
+        cp *.py dist/windows/
+        cp *.txt dist/windows/
+        cp *.md dist/windows/
+        cp LICENSE dist/windows/
+        cd dist/windows
+        zip -r ../texterify-language-processor-windows.zip .
+        cd ../..
+
+    - name: Verify distributions
+      run: |
+        # Verify the distributions were created correctly
+        ls -la dist/
+        file dist/texterify-language-processor.tar.gz
+        file dist/texterify-language-processor-windows.zip
+        echo "Distribution sizes:"
+        du -h dist/*
+
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: distribution
         path: dist/
+        retention-days: 30
 
   integration-test:
     name: Integration Tests
@@ -233,27 +315,85 @@ jobs:
         python -c "import glob; print('\\n'.join(glob.glob('*.zip')))"
         echo "Integration tests completed successfully"
 
-  release:
-    name: Release
+  deploy-dev:
+    name: Deploy to Development
     runs-on: ubuntu-latest
     needs: [test, code-quality, build, integration-test]
-    if: github.event_name == 'release'
+    if: github.ref == 'refs/heads/develop'
+    # environment: development  # Uncomment when you set up environments in GitHub
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
     - name: Download artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
+      with:
+        name: distribution
+        path: dist/
+
+    - name: Deploy to development environment
+      run: |
+        echo "Deploying to development environment..."
+        echo "Artifacts available:"
+        ls -la dist/
+        # Add your deployment logic here
+        # For example: upload to development server, update package registry, etc.
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: [test, code-quality, build, integration-test]
+    if: github.event_name == 'release'
+    # environment: production  # Uncomment when you set up environments in GitHub
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
       with:
         name: distribution
         path: dist/
 
     - name: Upload release assets
-      uses: actions/upload-release-asset@v1
+      uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: dist/texterify-language-processor.tar.gz
-        asset_name: texterify-language-processor-${{ github.event.release.tag_name }}.tar.gz
-        asset_content_type: application/gzip
+        files: |
+          dist/texterify-language-processor.tar.gz
+          dist/texterify-language-processor-windows.zip
+        draft: false
+        prerelease: false
+
+    - name: Deploy to production
+      run: |
+        echo "Deploying to production environment..."
+        echo "Release version: ${{ github.event.release.tag_name }}"
+        # Add your production deployment logic here
+        # For example: publish to PyPI, update package managers, etc.
+
+  notify:
+    name: Notify Team
+    runs-on: ubuntu-latest
+    needs: [test, code-quality, security, performance, build, integration-test]
+    if: always()
+    steps:
+    - name: Notify on success
+      if: needs.test.result == 'success' && needs.code-quality.result == 'success' && needs.security.result == 'success' && needs.performance.result == 'success' && needs.build.result == 'success' && needs.integration-test.result == 'success'
+      run: |
+        echo "✅ All CI/CD checks passed successfully!"
+        echo "Build artifacts are ready for deployment."
+
+    - name: Notify on failure
+      if: needs.test.result == 'failure' || needs.code-quality.result == 'failure' || needs.security.result == 'failure' || needs.performance.result == 'failure' || needs.build.result == 'failure' || needs.integration-test.result == 'failure'
+      run: |
+        echo "❌ CI/CD pipeline failed!"
+        echo "Failed jobs:"
+        echo "- Test: ${{ needs.test.result }}"
+        echo "- Code Quality: ${{ needs.code-quality.result }}"
+        echo "- Security: ${{ needs.security.result }}"
+        echo "- Performance: ${{ needs.performance.result }}"
+        echo "- Build: ${{ needs.build.result }}"
+        echo "- Integration Test: ${{ needs.integration-test.result }}"
+        exit 1
