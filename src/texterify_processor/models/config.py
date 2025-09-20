@@ -1,6 +1,7 @@
 """Configuration models for the Texterify Language Processor."""
 
 from dataclasses import dataclass, field
+
 from typing import Dict
 
 

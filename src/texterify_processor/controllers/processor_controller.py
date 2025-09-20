@@ -4,13 +4,14 @@ import tempfile
 from pathlib import Path
 from typing import Optional, Tuple
 
+from console_output import ConsoleOutput
+
 from ..models.archive import ArchiveInfo
 from ..models.result import ProcessingResult
 from ..services.archive_service import ArchiveService
 from ..services.config_service import ConfigService
 from ..services.file_service import FileService
 from ..services.output_service import OutputService
-from ..utils.console_output import ConsoleOutput
 from ..utils.user_interaction import ConflictResolution, UserInteraction
 
 

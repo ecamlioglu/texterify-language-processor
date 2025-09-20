@@ -1,6 +1,7 @@
 """Utility for handling user interactions."""
 
 from enum import Enum
+
 from typing import Optional
 
 

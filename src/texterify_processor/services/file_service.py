@@ -4,9 +4,10 @@ import os
 from pathlib import Path
 from typing import List
 
+from console_output import ConsoleOutput
+
 from ..models.config import ProcessingConfig
 from ..models.result import FileOperation
-from ..utils.console_output import ConsoleOutput
 
 
 class FileService:

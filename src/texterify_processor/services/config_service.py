@@ -4,8 +4,9 @@ import json
 from pathlib import Path
 from typing import Optional
 
+from console_output import ConsoleOutput
+
 from ..models.config import ProcessingConfig
-from ..utils.console_output import ConsoleOutput
 
 
 class ConfigService:

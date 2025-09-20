@@ -3,14 +3,15 @@
 Integration tests for Texterify Language Processor
 """
 
-import json
 import subprocess
-import sys
-import tempfile
 import unittest
 import zipfile
-from pathlib import Path
 from unittest.mock import patch
+
+import json
+import sys
+import tempfile
+from pathlib import Path
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))

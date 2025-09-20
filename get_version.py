@@ -8,7 +8,7 @@ from pathlib import Path
 # Add the project root to path to import version
 sys.path.append(str(Path(__file__).parent))
 
-from version import VERSION, PROJECT_NAME, PROJECT_LICENSE, PYTHON_MIN_VERSION
+from version import PROJECT_LICENSE, PROJECT_NAME, PYTHON_MIN_VERSION, VERSION
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:

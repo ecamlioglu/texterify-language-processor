@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 # Import version info
-from version import VERSION, PROJECT_NAME, PROJECT_DESCRIPTION, PROJECT_AUTHOR
+from version import PROJECT_AUTHOR, PROJECT_DESCRIPTION, PROJECT_NAME, VERSION
 
 
 def check_python_version():

@@ -18,9 +18,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Import after path modification
-from texterify_processor import ProcessorController  # noqa: E402
-from texterify_processor.utils.console_output import \
-    ConsoleOutput  # noqa: E402
+import texterify_processor as legacy_processor  # noqa: E402
+from console_output import ConsoleOutput  # noqa: E402
 from version import get_version_string  # noqa: E402
 
 
@@ -86,7 +85,7 @@ def main():
         args = parser.parse_args()
 
         # Create and run the processor
-        controller = ProcessorController(args.zip_file, args.config)
+        controller = legacy_processor.TexterifyProcessor(args.zip_file, args.config)
         result = controller.process()
 
         # Display results

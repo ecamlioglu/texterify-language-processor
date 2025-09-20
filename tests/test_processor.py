@@ -3,11 +3,12 @@
 Test suite for Texterify Language Processor
 """
 
+import unittest
+import zipfile
+
 import json
 import sys
 import tempfile
-import unittest
-import zipfile
 from pathlib import Path
 
 # Add src to path to import the processor
