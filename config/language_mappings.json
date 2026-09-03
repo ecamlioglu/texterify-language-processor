@@ -12,7 +12,16 @@
   },
   "language_mappings": {
     "en": "24c9b00d-d028-4e04-a1aa-f04d2dcae2c3.json",
-    "tr": "26c7ace9-13fc-43b8-9988-2384fe670d03.json"
+    "tr": "26c7ace9-13fc-43b8-9988-2384fe670d03.json",
+    "fr": "835a7c06-9e18-4ff5-8087-9e41cd2c9e72.json",
+    "it": "412bdd48-668a-4990-9944-4ce9839488b0.json",
+    "es": "ed2c6ad0-96f0-46d9-a909-93b873db2394.json",
+    "pt": "ad73546a-2fc9-4903-a510-e4a367b68d29.json",
+    "ar": "73da5d37-17f8-4741-8234-fa4680353232.json",
+    "el": "ea33b377-73cf-4a46-a7f9-6ea541d32905.json",
+    "hu": "9deb4fc2-9e0b-43d2-876b-a6f2b798a412.json",
+    "bg": "6f55c0af-7792-45bf-b0f0-cfdf836db274.json",
+    "ro": "7c2ee685-3aa7-47ba-b4a0-d2887293f475.json"
   },
   "settings": {
     "case_sensitive": false,
