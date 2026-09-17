@@ -148,3 +148,17 @@ This section supersedes the notarization NOT_RUN items immediately above. The us
 - Final ZIP: `dist/releases/Texterify-Renamer-1.1.0-arm64/Texterify-Renamer-1.1.0-arm64.zip`; SHA-256 `f8ef53637bb63588dc38edbd65ca77c3805575ab9cb87f730193be81bc5f9e50`. The same directory contains `SHA256SUMS.txt` and signed production `appcast.xml`.
 - Public repository confirmed: `ecamlioglu/texterify-language-processor`. Its existing Latest is Python v2.1.0. Added macOS-release exclusions to the Python CI workflow and a separate `macos-updates` feed design. Publication script uploads/checks the version ZIP before updating the stable feed and does not change Python's Latest designation.
 - NOT_RUN: GitHub publication, public-feed update check, fresh second-Mac browser download, background check reminder/setting persistence and postponement branches, remote GitHub Actions. No commit, tag or push performed. The updater is verified against the local signed feed; its production GitHub feed URL is not yet published. The original 1.0.0 build needs a one-time manual upgrade to an updater-enabled release.
+
+## Public GitHub release — 2026-09-17
+
+This section supersedes the unpublished-release status above.
+
+- Published stable release [macos-v1.1.0](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.0), version 1.1.0/build 4, at source commit `7c86c332a1361f230d422cd423b61b20a5105b9c`. Python's Latest remains `v2.1.0`.
+- PASS: final ZIP checksum, extracted Developer ID signature, stapled notarization ticket and Gatekeeper assessment rechecked before publication.
+- PASS: anonymously downloaded public GitHub ZIP matches the notarized candidate byte-for-byte; SHA-256 `f8ef53637bb63588dc38edbd65ca77c3805575ab9cb87f730193be81bc5f9e50`.
+- PASS: public `macos-updates/appcast.xml` matches the prepared feed byte-for-byte and its Sparkle signature verifies. The earlier HTTP 404 is resolved.
+- Installed `/Applications/Texterify Renamer.app` reports 1.1.0/build 4 and uses this production feed URL. Native live-feed UI verification is pending because the Mac was locked during the publication check.
+- Python CI exposed a Windows fixture-decoding failure; `7c86c33` explicitly reads `expected.json` as UTF-8. All 22 Python tests pass locally after that fix; its new remote run is pending.
+- Remote CI is not fully passing: macOS run `35199429547` stopped at the SDK preflight because its runner has Xcode 26.6/Swift 6.3.3, while this app requires Xcode 27/Swift 6.4/macOS SDK 27. Python run `35199429505` also failed Safety's environment scan, reporting vulnerabilities in installed tooling packages; the Python application's requirements remain standard-library-only. Neither check was disabled to publish the independently verified local macOS artifact.
+- Native source is unchanged since the notarized candidate was built. Committed shared JSON resources normalize CRLF to LF; their contents are semantically unchanged from the candidate. No claim of a reproducible byte-identical rebuild is made.
+- A fresh second-Mac installation and the remaining native interaction checks above are still NOT_RUN.
