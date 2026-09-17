@@ -1,6 +1,7 @@
 name: macOS app
 
 on:
+  workflow_dispatch:
   push:
     branches: [main, develop]
     paths: ['macos/**', 'config/**', 'tests/fixtures/**', 'scripts/*macos*', '.github/workflows/macos.yml']
@@ -12,7 +13,8 @@ permissions:
 
 jobs:
   build:
-    runs-on: macos-latest
+    # macos-latest still selects Xcode 26; this app uses the macOS 27 SDK.
+    runs-on: xcode-27
     steps:
       - uses: actions/checkout@v4
       - name: Check modern toolchain

@@ -154,28 +154,32 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9'
+        python-version: '3.12'
 
     - name: Install security tools
       run: |
-        pip install bandit safety
+        python -m pip install --upgrade pip
+        python -m pip install bandit pip-audit
 
     - name: Run Bandit (security scanner)
       run: |
         bandit -r src/ -f json -o bandit-report.json || true
         bandit -r src/
 
-    - name: Run Safety (dependency scanner)
+    - name: Audit application dependencies
       run: |
-        # Check for known security vulnerabilities
-        safety check
+        # Scan application requirements, not the scanner's own environment.
+        # This is currently empty because the app uses only the standard library.
+        python -m pip_audit -r requirements.txt --format json --output dependency-audit.json
 
     - name: Upload security reports
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: security-reports
-        path: bandit-report.json
+        path: |
+          bandit-report.json
+          dependency-audit.json
         retention-days: 7
 
   performance:
