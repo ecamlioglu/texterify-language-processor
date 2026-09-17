@@ -17,3 +17,7 @@ venv/bin/python3.12
 dist/*
 *.egg-info/
 build/
+macos/.build/
+macos/.swiftpm/
+.venv/
+.pytest_cache/

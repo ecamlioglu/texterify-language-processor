@@ -13,26 +13,36 @@ class ConfigService:
     """Service for loading and managing configuration."""
 
     @staticmethod
-    def load_config(config_path: Optional[str] = None) -> ProcessingConfig:
+    def load_config(
+        config_path: Optional[str] = None, *, console=ConsoleOutput, strict=False
+    ) -> ProcessingConfig:
         """Load configuration from file or return default."""
         if config_path is None:
             # Use default config path relative to the package
             package_root = Path(__file__).parent.parent.parent.parent
             config_path = package_root / "config" / "language_mappings.json"
+            if not config_path.exists():
+                config_path = (
+                    Path(__file__).parent.parent / "config" / "language_mappings.json"
+                )
         else:
             config_path = Path(config_path)
 
         try:
-            return ConfigService._load_from_file(config_path)
+            return ConfigService._load_from_file(config_path, console=console)
         except Exception as e:
-            ConsoleOutput.print_warning(
+            if strict:
+                raise
+            console.print_warning(
                 f"Could not load configuration from {config_path}: {e}"
             )
-            ConsoleOutput.print_info("Using default configuration")
+            console.print_info("Using default configuration")
             return ProcessingConfig.get_default()
 
     @staticmethod
-    def _load_from_file(config_path: Path) -> ProcessingConfig:
+    def _load_from_file(
+        config_path: Path, *, console=ConsoleOutput
+    ) -> ProcessingConfig:
         """Load configuration from a specific file."""
         if not config_path.exists():
             raise FileNotFoundError(f"Configuration file not found: {config_path}")
@@ -41,7 +51,7 @@ class ConfigService:
             with open(config_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
 
-            ConsoleOutput.print_info(f"Loaded configuration from: {config_path.name}")
+            console.print_info(f"Loaded configuration from: {config_path.name}")
             return ProcessingConfig.from_dict(data)
 
         except json.JSONDecodeError as e:

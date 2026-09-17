@@ -18,12 +18,26 @@ from ..utils.user_interaction import ConflictResolution, UserInteraction
 class ProcessorController:
     """Main controller for orchestrating the processing workflow."""
 
-    def __init__(self, zip_path: str, config_path: Optional[str] = None):
+    def __init__(
+        self,
+        zip_path: str,
+        config_path: Optional[str] = None,
+        *,
+        output_dir: Optional[str] = None,
+        conflict_resolution=None,
+        console=ConsoleOutput,
+        strict_config: bool = False,
+    ):
         """Initialize the processor controller."""
         self.zip_path = Path(zip_path).resolve()
-        self.config = ConfigService.load_config(config_path)
-        self.output_service = OutputService(self.config, self.zip_path.parent)
-        self.file_service = FileService(self.config)
+        self.console = console
+        self.conflict_resolution = conflict_resolution
+        self.config = ConfigService.load_config(
+            config_path, console=console, strict=strict_config
+        )
+        destination = Path(output_dir).resolve() if output_dir else self.zip_path.parent
+        self.output_service = OutputService(self.config, destination)
+        self.file_service = FileService(self.config, console=console)
 
         # Validate configuration
         if not ConfigService.validate_config(self.config):
@@ -35,14 +49,10 @@ class ProcessorController:
 
         try:
             # Display header and input info
-            import sys
-            from pathlib import Path
+            from ..version import get_version_string
 
-            sys.path.append(str(Path(__file__).parent.parent.parent.parent))
-            from version import get_version_string
-
-            ConsoleOutput.print_header(get_version_string())
-            ConsoleOutput.print_input_info(
+            self.console.print_header(get_version_string())
+            self.console.print_input_info(
                 self.zip_path, list(self.config.language_mappings.keys())
             )
 
@@ -54,7 +64,7 @@ class ProcessorController:
 
             # Handle output file conflicts
             conflict_resolution = self._handle_output_conflicts()
-            if conflict_resolution is None:
+            if conflict_resolution in (None, ConflictResolution.CANCEL):
                 result.error_message = "Operation cancelled by user"
                 return result
 
@@ -85,7 +95,7 @@ class ProcessorController:
         """Validate the input archive."""
         archive_info = ArchiveService.validate_archive(self.zip_path)
         if not archive_info.is_valid:
-            ConsoleOutput.print_error(archive_info.error_message)
+            self.console.print_error(archive_info.error_message)
         return archive_info
 
     def _handle_output_conflicts(self) -> Optional[ConflictResolution]:
@@ -95,7 +105,9 @@ class ProcessorController:
         if not has_conflict:
             return ConflictResolution.OVERWRITE  # No conflict, proceed normally
 
-        return UserInteraction.get_conflict_resolution(existing_filename)
+        return self.conflict_resolution or UserInteraction.get_conflict_resolution(
+            existing_filename
+        )
 
     def _get_output_filename(self, resolution: ConflictResolution) -> Tuple[str, bool]:
         """Get output filename based on conflict resolution."""
@@ -113,7 +125,7 @@ class ProcessorController:
                 temp_path = Path(temp_dir)
 
                 # Extract archive
-                ConsoleOutput.print_extraction_start()
+                self.console.print_extraction_start()
                 if not ArchiveService.extract_archive(self.zip_path, temp_path):
                     result.error_message = "Failed to extract archive"
                     return False
@@ -122,7 +134,7 @@ class ProcessorController:
                 file_operations = self.file_service.find_and_rename_files(temp_path)
 
                 if not file_operations:
-                    ConsoleOutput.print_no_language_files_warning(
+                    self.console.print_no_language_files_warning(
                         list(self.config.language_mappings.keys())
                     )
                     result.error_message = "No language files found to process"

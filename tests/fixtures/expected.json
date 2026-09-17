@@ -1,0 +1,6 @@
+{
+  "english.json": "{\"greeting\":\"Hello\"}",
+  "nested/turkish.json": "{\"greeting\":\"Merhaba, dünya 🌿\"}",
+  "french.json": "Bonjour",
+  "assets/info.txt": "Preserve this file byte-for-byte."
+}

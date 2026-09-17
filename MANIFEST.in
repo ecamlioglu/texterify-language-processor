@@ -1,0 +1,2 @@
+include config/language_mappings.json
+include README.md LICENSE

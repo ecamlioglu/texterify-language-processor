@@ -1,0 +1,15 @@
+{
+  "language_mappings": {
+    "en": "english.json",
+    "tr": "turkish.json",
+    "fr": "french.json"
+  },
+  "settings": {
+    "case_sensitive": false,
+    "output_format": {
+      "base_filename": "contract",
+      "date_format": "%Y%m%d",
+      "extension": ".zip"
+    }
+  }
+}

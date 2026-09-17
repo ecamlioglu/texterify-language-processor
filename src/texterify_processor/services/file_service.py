@@ -13,8 +13,9 @@ from ..models.result import FileOperation
 class FileService:
     """Service for file operations and transformations."""
 
-    def __init__(self, config: ProcessingConfig):
+    def __init__(self, config: ProcessingConfig, *, console=ConsoleOutput):
         self.config = config
+        self.console = console
 
     def find_and_rename_files(self, directory: Path) -> List[FileOperation]:
         """Find language files and rename them according to configuration."""
@@ -42,14 +43,14 @@ class FileService:
             new_path = file_path.parent / target_name
             file_path.rename(new_path)
 
-            ConsoleOutput.print_renamed_file(file_path.name, target_name)
+            self.console.print_renamed_file(file_path.name, target_name)
             return FileOperation(
                 original_name=file_path.name,
                 new_name=target_name,
                 operation_type="rename",
             )
         except Exception as e:
-            ConsoleOutput.print_error(f"Failed to rename {file_path.name}: {e}")
+            self.console.print_error(f"Failed to rename {file_path.name}: {e}")
             return None
 
     def _get_target_name(self, file_stem: str) -> str:
