@@ -1,6 +1,8 @@
-# Texterify Renamer
+# Texterify Renamer — macOS maintainer guide
 
 Native macOS 27+ menu bar app, in the same repository as the Python library. ZIP processing runs offline; optional update checks use GitHub. No Python installation is needed by the Mac app.
+
+**Looking to use the app?** [Download the signed release](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.0) and follow the [user wiki](../docs/wiki/README.md). This page is for building, signing and maintaining the native app. The [legacy Python guide](../docs/wiki/Legacy-Python.md) covers the separate CLI/library.
 
 ## Application identity
 
@@ -32,7 +34,7 @@ NOTARY_PROFILE=texterify-renamer TEAM_ID=P3M6R3G2A6 bash scripts/notarize-macos.
 
 The signing script adds Hardened Runtime and a secure timestamp. The notarization script checks the certificate/team, submits a copy of the signed app to Apple, requires `Accepted`, staples the ticket to the app, checks Gatekeeper, and creates a fresh ZIP. It extracts that final ZIP to verify the signature and stapled ticket again, and writes `SHA256SUMS.txt`. ZIP files cannot themselves be stapled.
 
-Only successful runs create `dist/releases/Texterify-Renamer-<version>-<arch>/`. Existing release directories are never overwritten. Submission files and JSON responses stay in ignored `dist/notarization/` for diagnosis. A timeout does not cancel Apple's processing: inspect the submission ID using `xcrun notarytool info <id> --keychain-profile texterify-renamer` before resubmitting. No script uploads to GitHub or changes Python releases.
+Only successful runs create `dist/releases/Texterify-Renamer-<version>-<arch>/`. Existing release directories are never overwritten. Submission files and JSON responses stay in ignored `dist/notarization/` for diagnosis. A timeout does not cancel Apple's processing: inspect the submission ID using `xcrun notarytool info <id> --keychain-profile texterify-renamer` before resubmitting. Building and notarizing do not publish; the separate publication script is described below.
 
 Before publishing, test the ZIP after a browser download on another Mac: unzip, move the app into Applications, open, drop a ZIP, save a mapping and export, then reopen to check persisted settings. Current builds require **macOS 27+**; an arm64 ZIP supports **Apple Silicon**. Local signing and Gatekeeper checks do not replace this clean-install test. Use a separate `macos-v1.1.0` release tag. The Python workflow now skips macOS release events; those workflow changes must be included in the source commit before publishing.
 
@@ -66,11 +68,11 @@ For each release:
 
 5. Verify **Güncellemeleri denetle…** from an older installed version against the public GitHub endpoint. Local update testing does not prove GitHub CDN availability.
 
-The original 1.0.0 build has no updater and must be replaced manually once. No GitHub credentials are shipped in the app. Developer ID signing/notarization/keychain access remains local; CI artifacts are development builds, not public update packages. The first public source commit/tag and GitHub publication still require an explicit release action.
+The original 1.0.0 build has no updater and must be replaced manually once. No GitHub credentials are shipped in the app. Developer ID signing/notarization/keychain access remains local; CI artifacts are development builds, not public update packages. Version 1.1.0 is published; future releases use the explicit process above with a new version/build and release directory.
 
 ## Build and open
 
-Requires Xcode 27 / Swift 6.4 and the macOS 27 SDK. The package uses Swift 6 language mode. The first build downloads pinned ZIPFoundation 0.9.20.
+Requires Xcode 27 / Swift 6.4 and the macOS 27 SDK. The package uses Swift 6 language mode. The first build downloads pinned ZIPFoundation 0.9.20 and Sparkle 2.10.0. GitHub Actions explicitly uses the `xcode-27` runner and validates the toolchain before testing and packaging.
 
 ```sh
 bash scripts/build-macos.sh release

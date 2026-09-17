@@ -1,5 +1,7 @@
 # macOS MVP validation — 2026-09-16
 
+> Engineering history: entries below describe successive checkpoints and can supersede earlier results. For current installation and use, read the [Texterify Renamer wiki](wiki/README.md). The latest completed checks are the CI recovery and native public-feed sections at the end.
+
 Environment: Apple Silicon, macOS 27.0 (26A428), Xcode 27.0, Swift 6.4. The initial MVP targeted macOS 13. The later Liquid Glass redesign below raises the deployment target to macOS 27; the initial MVP checks in this section are historical.
 
 ## Verified

@@ -1,285 +1,68 @@
-# 🌐 Texterify Language Processor
+# Texterify Renamer
 
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://python.org)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.1.0-orange.svg)](version.py)
-[![CI/CD](https://img.shields.io/github/actions/workflow/status/ecamlioglu/texterify-language-processor/ci.yml?branch=main)](https://github.com/ecamlioglu/texterify-language-processor/actions)
-[![Tests](https://img.shields.io/badge/Tests-Comprehensive-brightgreen.svg)](tests/)
+**Your Texterify export, ready for your app.**
 
-A professional-grade command-line tool for processing **Texterify** language export files. Features configurable language mappings, interactive conflict resolution, and automated deployment workflows.
+A small native macOS app that lives in your menu bar. Drop in a Texterify ZIP, preview the filename changes, and save an archive with the names your project expects. A soft Liquid Glass interface keeps the everyday workflow simple.
 
-## macOS menu bar app and Python library
+[**Download for macOS**](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.0) · [User wiki](docs/wiki/README.md) · [Report an issue](https://github.com/ecamlioglu/texterify-language-processor/issues/new/choose)
 
-The native **Texterify Renamer** app lives in [`macos/`](macos/README.md). Drop a ZIP onto its menu bar icon or panel, preview the file renames, and save the output. It includes a config editor and works without Python installed.
+[![macOS 27+](https://img.shields.io/badge/macOS-27%2B-7563BC)](docs/wiki/Installation.md)
+[![Apple Silicon](https://img.shields.io/badge/Apple_Silicon-arm64-7563BC)](docs/wiki/Installation.md)
+[![macOS build](https://github.com/ecamlioglu/texterify-language-processor/actions/workflows/macos.yml/badge.svg)](https://github.com/ecamlioglu/texterify-language-processor/actions/workflows/macos.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Build locally with `bash scripts/build-macos.sh release`, then open `dist/Texterify Renamer.app`.
+## Install and start
 
-Python remains independently installable with `pip install .`. See [the non-interactive library API](docs/PYTHON_LIBRARY.md) for `process_archive(...)` and the [macOS validation report](docs/MAC_APP_VALIDATION.md) for verified checks and remaining limits.
+1. Download **Texterify-Renamer-1.1.0-arm64.zip** from the [macOS release](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.0).
+2. Unzip it and move **Texterify Renamer.app** into **Applications**.
+3. Open the app and click its menu bar icon.
 
-## ✨ Features
+The release is **Developer ID signed and notarized by Apple**. It requires **macOS 27 or later on Apple Silicon**. You do not need Python, Xcode, a terminal, or a Texterify account connection. The current interface is in Turkish; the wiki includes the exact button labels.
 
-- 🔧 **Configurable Language Mappings**: External JSON configuration for any language combinations
-- 📅 **Flexible Output Formats**: Customizable date formats and filename patterns
-- 🔄 **Interactive Conflict Resolution**: Smart handling of existing files with user choice
-- 🛡️ **Robust Error Handling**: Comprehensive validation and clear error messages
-- 🎨 **Beautiful CLI Interface**: Clean command-line experience with progress indicators
-- 🔧 **Cross-Platform**: Works seamlessly on Windows, macOS, and Linux
-- 📦 **Zero Dependencies**: Uses only Python standard library
-- 🚀 **Multiple Execution Options**: Python script, shell scripts, and batch files
-- 🧪 **Comprehensive Testing**: Full test suite with CI/CD integration
-- 📋 **Professional Documentation**: Complete examples and usage guides
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Python 3.8 or higher
-- No additional dependencies required!
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/ecamlioglu/texterify-language-processor.git
-cd texterify-language-processor
-
-# Make scripts executable (Linux/macOS)
-chmod +x scripts/*.sh
-```
-
-### Basic Usage
-
-```bash
-# Simple processing (uses default configuration)
-python src/texterify_processor.py "your_export.zip"
-
-# With custom configuration
-python src/texterify_processor.py "your_export.zip" --config "custom_mappings.json"
-
-# Try the included example
-python src/texterify_processor.py examples/sample_texterify_export.zip
-```
-
-## 💻 Usage Examples
-
-### Command Line Interface
-
-```bash
-# Basic processing with default config
-python src/texterify_processor.py "texterify_export.zip"
-
-# Custom configuration file
-python src/texterify_processor.py "export.zip" --config "config/custom.json"
-
-# Process the included example
-python src/texterify_processor.py examples/sample_texterify_export.zip
-
-# Full path support
-python src/texterify_processor.py "C:\Downloads\my_export.zip"
-```
-
-### Shell Scripts (Recommended)
-
-**Windows PowerShell:**
-```powershell
-.\scripts\texterify-processor.ps1 "your_export.zip"
-```
-
-**Linux/macOS:**
-```bash
-./scripts/texterify-processor.sh "your_export.zip"
-```
-
-**Windows Batch:**
-```cmd
-scripts\texterify-processor.bat "your_export.zip"
-```
-
-## 📋 What It Does
-
-1. **📦 Extracts** your Texterify zip export safely
-2. **🔍 Identifies** configured language files from your JSON config
-3. **✏️ Renames** them according to your mapping:
-   - Default: `en.*` → `24c9b00d-d028-4e04-a1aa-f04d2dcae2c3.json`
-   - Default: `tr.*` → `26c7ace9-13fc-43b8-9988-2384fe670d03.json`
-   - Custom: any language → any target filename
-4. **📅 Creates** customizable output archives with date formatting
-5. **🔄 Handles** conflicts with interactive user choice (overwrite/counter/cancel)
-6. **💾 Preserves** all other files in original structure
-
-## 📁 Project Structure
-
-```
-texterify-language-processor/
-├── src/
-│   └── texterify_processor.py      # Main processing engine
-├── config/
-│   └── language_mappings.json      # Default language configuration
-├── scripts/
-│   ├── texterify-processor.sh      # Unix/Linux/macOS shell script
-│   ├── texterify-processor.ps1     # Windows PowerShell script
-│   └── texterify-processor.bat     # Windows batch file
-├── tests/
-│   ├── test_processor.py           # Unit tests
-│   ├── test_integration.py         # Integration tests
-│   └── run_tests.py                # Test runner
-├── examples/
-│   ├── sample_texterify_export.zip # Real example input
-│   ├── custom_config.json          # Configuration example
-│   └── README.md                   # Examples documentation
-├── docs/
-│   └── USAGE.md                    # Detailed usage guide
-├── .github/
-│   ├── workflows/ci.yml            # GitHub Actions CI/CD
-│   └── ISSUE_TEMPLATE/             # Issue templates
-├── version.py                      # Centralized version management
-├── get_version.py                  # Version extraction utility
-├── .gitignore                      # Git ignore rules
-├── LICENSE                         # MIT License
-├── requirements.txt                # Dependencies info
-└── README.md                       # This file
-```
-
-## 🎯 Output Formats
-
-### Standard Mode
-```
-Input:  texterify_export.zip
-Output: lang_files_16_09.zip
-```
-
-### Counter Mode
-```
-Input:  texterify_export.zip
-Output: lang_files_16_09_1.zip  (first export of the day)
-
-Input:  another_export.zip  
-Output: lang_files_16_09_2.zip  (second export of the day)
-```
-
-### Multiple Exports Timeline
-```
-09:00 AM → lang_files_16_09_1.zip
-11:30 AM → lang_files_16_09_2.zip  
-02:15 PM → lang_files_16_09_3.zip
-05:45 PM → lang_files_16_09_4.zip
-```
-
-## 🔧 Command Line Options
-
-```
-usage: texterify_processor.py [-h] [--counter [COUNTER]] [--version] zip_file
-
-positional arguments:
-  zip_file              Path to the Texterify zip export file
-
-optional arguments:
-  -h, --help            Show help message and exit
-  --counter [COUNTER], -c [COUNTER]
-                        Enable counter mode. Optionally specify value
-  --version             Show program version
-```
-
-### Counter Options
-- `--counter` or `-c`: Auto-detect next counter for today
-- `--counter 5`: Use specific counter value (5)
-- No counter: Standard mode (overwrites existing file)
-
-## 📊 Example Output
-
-```
-🚀 Texterify Language Processor v2.0.0
-📁 Input: my_texterify_export.zip
-📦 Extracting archive...
-✓ Renamed: en.json → 24c9b00d-d028-4e04-a1aa-f04d2dcae2c3.json
-✓ Renamed: tr.json → 26c7ace9-13fc-43b8-9988-2384fe670d03.json
-✅ Success! Processed 2 files
-📦 Output: lang_files_16_09_3.zip
-📍 Location: C:\Users\Developer\Desktop
-🔢 Counter: 3
-
-🎉 Processing completed successfully!
-```
-
-## 🛠️ Development
-
-### Running Tests
-```bash
-python -m pytest tests/
-```
-
-### Code Style
-```bash
-# Format code
-black src/ scripts/
-
-# Lint code  
-flake8 src/
-```
-
-## 🔄 Integration Examples
-
-### CI/CD Pipeline (GitHub Actions)
-```yaml
-- name: Process Language Files
-  run: |
-    python src/texterify_processor.py "exports/languages.zip" --counter
-```
-
-### Build Script Integration
-```bash
-#!/bin/bash
-# Download latest Texterify export
-curl -o "latest_export.zip" "$TEXTERIFY_EXPORT_URL"
-
-# Process with counter
-python texterify_processor.py "latest_export.zip" --counter
-
-# Deploy processed files
-aws s3 cp lang_files_*.zip s3://my-app-bucket/languages/
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-- 📖 **Documentation**: Check the [docs/](docs/) directory
-- 🐛 **Bug Reports**: [Open an issue](https://github.com/ecamlioglu/texterify-language-processor/issues)
-- 💡 **Feature Requests**: [Open an issue](https://github.com/ecamlioglu/texterify-language-processor/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/ecamlioglu/texterify-language-processor/discussions)
-
-## 🏆 Why Choose This Tool?
-
-- ✅ **Production Ready**: Used in enterprise environments
-- ✅ **Well Tested**: Comprehensive test suite
-- ✅ **Cross Platform**: Works everywhere Python runs
-- ✅ **Zero Dependencies**: No external packages required
-- ✅ **Professional**: Clean code, proper error handling
-- ✅ **Flexible**: Multiple execution methods
-- ✅ **Maintained**: Regular updates and bug fixes
-
-## 🎖️ Acknowledgments
-
-- Built for the **Texterify** localization platform
-- Inspired by modern DevOps practices
-- Designed for developer productivity
-
----
-
-<div align="center">
-
-**⭐ Star this repository if it helped you! ⭐**
-
-Made with ❤️ for the developer community
-
-</div>
+> Choose the release marked **Texterify Renamer … (macOS)**. GitHub's repository-wide “Latest” currently points to the separate legacy Python release.
+
+## Drop. Preview. Save.
+
+1. Drop your Texterify ZIP onto the menu bar icon or open the panel and choose **Dosya seç**.
+2. Review the proposed renames. Open **Eşleştirmeler** to adapt the mappings to your project.
+3. Select **ZIP’i indir**, choose an output folder when prompted, and use **Finder’da göster** to reveal the result.
+
+For example, mapping `en` to `english.json` turns `en.json` into `english.json` inside the output ZIP. Translation contents stay the same; unmatched files keep their names and folders. The source ZIP is preserved.
+
+## Made for a small, repeatable task
+
+- **Native Liquid Glass.** A compact menu bar panel, soft accents, and System, Light, and Dark appearances.
+- **Mappings you can manage.** Search and edit mappings, preview JSON, or import and export a configuration.
+- **Clear output.** Preview changes before saving; choose a folder, filename prefix, and date format.
+- **Existing files stay safe.** The Mac app creates a new output name or lets you cancel instead of overwriting a file.
+- **Local processing.** ZIP conversion runs on your Mac. Optional update checks connect to GitHub.
+- **Updates in the app.** Use **Tercihler → Güncellemeleri denetle…**. Automatic checks are optional; installation remains your choice.
+
+[Try the sample export](examples/README.md) · [Configure mappings](docs/wiki/Configuration.md) · [Learn about updates](docs/wiki/Updates.md)
+
+## Documentation
+
+| I want to… | Start here |
+| --- | --- |
+| Install or use the Mac app | [User wiki](docs/wiki/README.md) |
+| Change mappings and output names | [Configuration](docs/wiki/Configuration.md) |
+| Resolve a problem | [Troubleshooting](docs/wiki/Troubleshooting.md) |
+| Build or contribute | [Contributing](CONTRIBUTING.md) |
+| Sign and publish a release | [macOS maintainer guide](macos/README.md) |
+| See what has actually been tested | [Validation record](docs/MAC_APP_VALIDATION.md) |
+
+## Legacy Python package
+
+Prefer a script, a build pipeline, Windows, or Linux? The **Texterify Language Processor** CLI and Python library remain available in this repository. The native app has its own Swift implementation and does not run Python.
+
+The legacy Python package keeps its independent **2.1.0** version. Use the current repository source for the reusable `process_archive(...)` API; older Python release assets predate that API.
+
+[**Legacy Python wiki →**](docs/wiki/Legacy-Python.md)
+
+## Open source
+
+Built with SwiftUI, AppKit, [ZIPFoundation](https://github.com/weichsel/ZIPFoundation), and [Sparkle](https://github.com/sparkle-project/Sparkle). Released under the [MIT License](LICENSE).
+
+Processing checks live in the [Swift tests](macos/Tests/RenamerCoreTests/) and [Python tests](tests/); see the validation record above for native UI and release checks.
+
+The repository keeps its original `texterify-language-processor` URL so existing links and Python workflows continue to work.

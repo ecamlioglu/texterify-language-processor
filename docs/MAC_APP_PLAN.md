@@ -1,5 +1,7 @@
 # Texterify Renamer — macOS uygulama planı
 
+> Tarihsel tasarım kaydıdır; güncel ürün rehberi değildir. Uygulama yayımlandı. Kurulum ve kullanım için [wiki](wiki/README.md), dağıtım için [macOS geliştirici rehberi](../macos/README.md) kullanılmalıdır.
+
 Tarih: 16 Eylül 2026. Bu belge ilk tasarım planıdır. Aynı gün MVP aynı repo içindeki `macos/` altında uygulandı. Gerçek teslim ve doğrulama durumu için [MAC_APP_VALIDATION.md](MAC_APP_VALIDATION.md) ve [macOS kullanım belgesi](../macos/README.md) esas alınmalıdır.
 
 ## 1. Ürün kararı
