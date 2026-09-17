@@ -73,7 +73,7 @@ class TestLibraryAPI(unittest.TestCase):
             fixture / "export.zip", fixture / "config.json", output_dir=self.folder
         )
         self.assertTrue(result.success, result.error_message)
-        expected = json.loads((fixture / "expected.json").read_text())
+        expected = json.loads((fixture / "expected.json").read_text(encoding="utf-8"))
         with zipfile.ZipFile(result.output_file) as archive:
             actual = {
                 name: archive.read(name).decode("utf-8") for name in archive.namelist()
