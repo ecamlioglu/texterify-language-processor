@@ -1,0 +1,40 @@
+name: macOS app
+
+on:
+  push:
+    branches: [main, develop]
+    paths: ['macos/**', 'config/**', 'tests/fixtures/**', 'scripts/*macos*', '.github/workflows/macos.yml']
+  pull_request:
+    paths: ['macos/**', 'config/**', 'tests/fixtures/**', 'scripts/*macos*', '.github/workflows/macos.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check modern toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+          sdk_major=$(xcrun --sdk macosx --show-sdk-version | cut -d. -f1)
+          if [ "$sdk_major" -lt 27 ]; then
+            echo "This app requires Xcode 27 / Swift 6.4 and macOS SDK 27. Select a runner with that toolchain." >&2
+            exit 1
+          fi
+      - name: Check shared config
+        run: cmp config/language_mappings.json macos/Sources/RenamerCore/Resources/default-config.json
+      - name: Check release script syntax
+        run: bash -n scripts/build-macos.sh scripts/notarize-macos.sh scripts/prepare-macos-update.sh scripts/publish-macos-release.sh
+      - name: Run Swift tests
+        run: swift test --package-path macos
+      - name: Build locally signed app
+        run: bash scripts/build-macos.sh release
+      - name: Archive app preserving bundle metadata
+        run: ditto -c -k --keepParent 'dist/Texterify Renamer.app' dist/Texterify-Renamer.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Texterify-Renamer-macOS
+          path: dist/Texterify-Renamer.zip
