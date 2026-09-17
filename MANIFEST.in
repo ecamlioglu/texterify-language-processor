@@ -1,2 +1,3 @@
 include config/language_mappings.json
 include README.md LICENSE
+include docs/PYTHON_LIBRARY.md
