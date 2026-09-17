@@ -162,3 +162,14 @@ This section supersedes the unpublished-release status above.
 - Remote CI is not fully passing: macOS run `35199429547` stopped at the SDK preflight because its runner has Xcode 26.6/Swift 6.3.3, while this app requires Xcode 27/Swift 6.4/macOS SDK 27. Python run `35199429505` also failed Safety's environment scan, reporting vulnerabilities in installed tooling packages; the Python application's requirements remain standard-library-only. Neither check was disabled to publish the independently verified local macOS artifact.
 - Native source is unchanged since the notarized candidate was built. Committed shared JSON resources normalize CRLF to LF; their contents are semantically unchanged from the candidate. No claim of a reproducible byte-identical rebuild is made.
 - A fresh second-Mac installation and the remaining native interaction checks above are still NOT_RUN.
+
+## CI recovery — 2026-09-17
+
+This section supersedes the remote CI failures above. Fix commit: `8062a25fadb4e22bdd69418f3facb9c49c20f8b4`.
+
+- PASS: [Python CI/CD run 35206399966](https://github.com/ecamlioglu/texterify-language-processor/actions/runs/35206399966). All ten OS/Python test combinations, formatting/lint, documentation, Bandit, application dependency audit, performance, integration and distribution packaging passed. Existing Python `v2.1.0` was detected and left unchanged.
+- The security job now runs on Python 3.12 and uses `pip-audit -r requirements.txt`; it audits declared application dependencies instead of Safety's own installed environment. The application currently has no third-party Python runtime dependencies. Bandit source scanning remains enforced, and both JSON reports are retained as CI artifacts.
+- PASS: [macOS run 35206399963](https://github.com/ecamlioglu/texterify-language-processor/actions/runs/35206399963). The explicit `xcode-27` GitHub runner reports Xcode 27.0 and Swift 6.4. Toolchain/config/script checks, Swift tests, release build, strict ad-hoc signature validation, ZIP packaging and artifact upload all passed.
+- Swift CI: 12 discovered tests, 11 passed, 1 expected skip, 0 failures. The skipped test requires the user's untracked local real-world ZIPs; the committed shared Python/Swift fixture runs in CI. The real-world test previously passed locally.
+- CI signing remains ad-hoc for development artifacts. The public 1.1.0/build 4 Developer ID/notarized release and signed update feed are unchanged by these workflow-only fixes.
+- Native public-feed UI verification remains blocked by the locked Mac. No claim of a successful native live update check is made; public feed/ZIP download and cryptographic verification have passed as recorded above.
