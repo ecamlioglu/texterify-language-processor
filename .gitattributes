@@ -1,0 +1,3 @@
+# These files must remain byte-identical for the native build's shared-config check.
+config/language_mappings.json text eol=lf
+macos/Sources/RenamerCore/Resources/default-config.json text eol=lf

@@ -9,6 +9,14 @@
 
 A professional-grade command-line tool for processing **Texterify** language export files. Features configurable language mappings, interactive conflict resolution, and automated deployment workflows.
 
+## macOS menu bar app and Python library
+
+The native **Texterify Renamer** app lives in [`macos/`](macos/README.md). Drop a ZIP onto its menu bar icon or panel, preview the file renames, and save the output. It includes a config editor and works without Python installed.
+
+Build locally with `bash scripts/build-macos.sh release`, then open `dist/Texterify Renamer.app`.
+
+Python remains independently installable with `pip install .`. See [the non-interactive library API](docs/PYTHON_LIBRARY.md) for `process_archive(...)` and the [macOS validation report](docs/MAC_APP_VALIDATION.md) for verified checks and remaining limits.
+
 ## ✨ Features
 
 - 🔧 **Configurable Language Mappings**: External JSON configuration for any language combinations
