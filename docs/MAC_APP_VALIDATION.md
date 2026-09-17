@@ -173,3 +173,9 @@ This section supersedes the remote CI failures above. Fix commit: `8062a25fadb4e
 - Swift CI: 12 discovered tests, 11 passed, 1 expected skip, 0 failures. The skipped test requires the user's untracked local real-world ZIPs; the committed shared Python/Swift fixture runs in CI. The real-world test previously passed locally.
 - CI signing remains ad-hoc for development artifacts. The public 1.1.0/build 4 Developer ID/notarized release and signed update feed are unchanged by these workflow-only fixes.
 - Native public-feed UI verification remains blocked by the locked Mac. No claim of a successful native live update check is made; public feed/ZIP download and cryptographic verification have passed as recorded above.
+
+## Native public-feed check — 2026-09-17
+
+- PASS: after the Mac was unlocked, opened the user's installed `/Applications/Texterify Renamer.app`, navigated to **Tercihler → Güncellemeleri denetle…**, and observed the native Sparkle alert: **“Uygulama güncel! Texterify Renamer 1.1.0, kullanılabilir en yeni sürümdür.”** Both accessibility text and the screenshot confirmed the result.
+- Rechecked the installed app's `SUFeedURL`: it points to the public GitHub `macos-updates/appcast.xml`. The earlier live-feed error no longer reproduces; the locked-screen blocker above is resolved.
+- This proves a successful manual check against the production feed. It does not add a new upgrade/relaunch test: the installed app is already 1.1.0. The earlier signed local-feed installation test and remaining second-Mac/background-check limitations still apply.
