@@ -18,6 +18,7 @@ archives=("$release_dir"/Texterify-Renamer-*.zip)
 [[ ${#archives[@]} == 1 && -f "${archives[0]}" ]] || exit 1
 archive="${archives[0]}"
 work="$(mktemp -d "$repo_root/dist/.publish.XXXXXX")"
+verification_id="$(uuidgen)"
 trap 'rm -rf "$work"' EXIT
 (cd "$release_dir" && shasum -a 256 -c SHA256SUMS.txt)
 ditto -x -k "$archive" "$work/extracted"
@@ -38,7 +39,7 @@ spctl --assess --type execute "$app"
 python3 scripts/verify-macos-update.py "$release_dir/appcast.xml" "$archive" "$plist"
 if gh release view macos-updates --repo "$repo" >/dev/null 2>&1; then
   curl --fail --silent --show-error --location \
-    "https://github.com/$repo/releases/download/macos-updates/appcast.xml" -o "$work/previous.xml"
+    "https://github.com/$repo/releases/download/macos-updates/appcast.xml?verification=$verification_id-previous" -o "$work/previous.xml"
   "$tools_dir/sign_update" --account "$account" --verify "$work/previous.xml"
   python3 scripts/verify-macos-update.py "$release_dir/appcast.xml" "$archive" "$plist" "$work/previous.xml"
 fi
@@ -68,7 +69,7 @@ if ! gh release view macos-updates --repo "$repo" >/dev/null 2>&1; then
 fi
 gh release upload macos-updates --repo "$repo" "$release_dir/appcast.xml" --clobber
 curl --fail --silent --show-error --location --retry 5 --retry-all-errors \
-  "https://github.com/$repo/releases/download/macos-updates/appcast.xml" -o "$work/public-appcast.xml"
+  "https://github.com/$repo/releases/download/macos-updates/appcast.xml?verification=$verification_id-published" -o "$work/public-appcast.xml"
 cmp "$release_dir/appcast.xml" "$work/public-appcast.xml"
 "$tools_dir/sign_update" --account "$account" --verify "$work/public-appcast.xml"
 echo "Published and verified: https://github.com/$repo/releases/tag/$tag"
