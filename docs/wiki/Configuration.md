@@ -54,3 +54,11 @@ Change the prefix and date style in **Tercihler**, then apply the change. The da
 Output uses `.zip`. Existing names receive a numeric suffix as needed.
 
 The [bundled default](../../config/language_mappings.json) includes 11 mappings. Its target IDs come from the original workflow; replace them with your project's filenames.
+
+## Only mapped files are exported
+
+From 1.1.1, a file is included only if its source name matches an active mapping. All other files, including unmapped languages, metadata, and helper files, are omitted. A warning lists the omitted paths before and after saving. No filename guessing is used.
+
+To include a helper file, add an explicit mapping for its name (without its final extension). A mapping can keep the same filename. Nested mapped files keep their folder paths; empty or unrelated directory entries are not copied. If nothing matches, no output is created.
+
+The legacy Python processor retains its previous unmatched-file behavior; this change applies to the Mac app.

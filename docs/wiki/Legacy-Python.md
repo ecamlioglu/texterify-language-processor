@@ -1,6 +1,6 @@
 # Legacy Python
 
-[Wiki home](README.md) · [Mac app download](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.0)
+[Wiki home](README.md) · [Mac app download](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.1)
 
 Texterify Renamer is the primary application. The original **Texterify Language Processor** remains available for terminal use, automation, and Python integrations on Windows, macOS, and Linux.
 
@@ -16,4 +16,4 @@ Texterify Renamer is the primary application. The original **Texterify Language 
 
 See the [Python installation, CLI and API reference](../PYTHON_LIBRARY.md) for copyable commands and automation examples.
 
-Python remains **2.1.0**, independent of macOS **1.1.0**. The historical [Python v2.1.0 release](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/v2.1.0) predates the reusable API. Install current repository source for `process_archive(...)`.
+Python remains **2.1.0**, independent of macOS **1.1.1**. The historical [Python v2.1.0 release](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/v2.1.0) predates the reusable API. Install current repository source for `process_archive(...)`.

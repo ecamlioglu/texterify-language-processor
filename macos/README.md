@@ -2,7 +2,7 @@
 
 Native macOS 27+ menu bar app, in the same repository as the Python library. ZIP processing runs offline; optional update checks use GitHub. No Python installation is needed by the Mac app.
 
-**Looking to use the app?** [Download the signed release](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.0) and follow the [user wiki](../docs/wiki/README.md). This page is for building, signing and maintaining the native app. The [legacy Python guide](../docs/wiki/Legacy-Python.md) covers the separate CLI/library.
+**Looking to use the app?** [Download the signed release](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.1) and follow the [user wiki](../docs/wiki/README.md). This page is for building, signing and maintaining the native app. The [legacy Python guide](../docs/wiki/Legacy-Python.md) covers the separate CLI/library.
 
 ## Application identity
 
@@ -36,7 +36,7 @@ The signing script adds Hardened Runtime and a secure timestamp. The notarizatio
 
 Only successful runs create `dist/releases/Texterify-Renamer-<version>-<arch>/`. Existing release directories are never overwritten. Submission files and JSON responses stay in ignored `dist/notarization/` for diagnosis. A timeout does not cancel Apple's processing: inspect the submission ID using `xcrun notarytool info <id> --keychain-profile texterify-renamer` before resubmitting. Building and notarizing do not publish; the separate publication script is described below.
 
-Before publishing, test the ZIP after a browser download on another Mac: unzip, move the app into Applications, open, drop a ZIP, save a mapping and export, then reopen to check persisted settings. Current builds require **macOS 27+**; an arm64 ZIP supports **Apple Silicon**. Local signing and Gatekeeper checks do not replace this clean-install test. Use a separate `macos-v1.1.0` release tag. The Python workflow now skips macOS release events; those workflow changes must be included in the source commit before publishing.
+Before publishing, test the ZIP after a browser download on another Mac: unzip, move the app into Applications, open, drop a ZIP, save a mapping and export, then reopen to check persisted settings. Current builds require **macOS 27+**; an arm64 ZIP supports **Apple Silicon**. Local signing and Gatekeeper checks do not replace this clean-install test. Use a separate `macos-v1.1.1` release tag. The Python workflow now skips macOS release events; those workflow changes must be included in the source commit before publishing.
 
 ## In-app updates and GitHub releases
 
@@ -53,7 +53,7 @@ For each release:
 3. Build with Developer ID and run `notarize-macos.sh` as above. Then run:
 
    ```sh
-   bash scripts/prepare-macos-update.sh dist/releases/Texterify-Renamer-1.1.0-arm64
+   bash scripts/prepare-macos-update.sh dist/releases/Texterify-Renamer-1.1.1-arm64
    ```
 
    This generates/signs `appcast.xml` using the final notarized ZIP, verifies the signing key matches the app and checks version, build, URL and byte count. Do not edit the resulting XML by hand.
@@ -61,14 +61,14 @@ For each release:
 4. After reviewing/testing the exact ZIP, explicitly publish:
 
    ```sh
-   bash scripts/publish-macos-release.sh dist/releases/Texterify-Renamer-1.1.0-arm64
+   bash scripts/publish-macos-release.sh dist/releases/Texterify-Renamer-1.1.1-arm64
    ```
 
    This requires committed app/config/scripts/workflows and an existing remote tag at HEAD. It refuses a non-increasing build compared with the current signed feed. It creates/uploads a draft version release, publishes it without changing Python's Latest designation, downloads and compares the public ZIP, then replaces the stable feed asset **last**. Both feed and public ZIP bytes are verified. A published version ZIP is never overwritten; after a partial publication, the script can continue only if its public ZIP equals the local one and the feed has not yet advanced. If feed upload succeeded but its CDN verification was stale, compare the public feed after cache expiry rather than uploading another version blindly.
 
 5. Verify **Güncellemeleri denetle…** from an older installed version against the public GitHub endpoint. Local update testing does not prove GitHub CDN availability.
 
-The original 1.0.0 build has no updater and must be replaced manually once. No GitHub credentials are shipped in the app. Developer ID signing/notarization/keychain access remains local; CI artifacts are development builds, not public update packages. Version 1.1.0 is published; future releases use the explicit process above with a new version/build and release directory.
+The original 1.0.0 build has no updater and must be replaced manually once. No GitHub credentials are shipped in the app. Developer ID signing/notarization/keychain access remains local; CI artifacts are development builds, not public update packages. Version 1.1.1 is the current release; future releases use the explicit process above with a new version/build and release directory.
 
 ## Build and open
 
@@ -112,7 +112,7 @@ Design references: [Apple WWDC26: What’s new in SwiftUI](https://developer.app
 
 ## Supported behavior
 
-- Match the final-extension stem, optionally case-sensitive; preserve nested paths and unrelated file bytes.
+- Match the final-extension stem, optionally case-sensitive; preserve nested paths and mapped file bytes. From 1.1.1, omit every unmapped file and report it before and after export.
 - Preserve unknown top-level config annotations during import/export.
 - Supported date patterns: `%d_%m`, `%Y%m%d`, `%Y-%m-%d`, `%Y-%m-%d_%H%M`.
 - `preserve_extensions=true`, `backup_original=true`, unknown processing settings, or a non-ZIP output extension are rejected explicitly.

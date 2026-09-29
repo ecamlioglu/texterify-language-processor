@@ -9,7 +9,7 @@
 3. Review the English and Turkish renames.
 4. Choose **ZIP’i indir** and save to a folder.
 
-The sample includes `en.json`, `tr.json`, metadata and additional files. Only mapped filenames change; translation contents and unmatched files remain intact.
+The sample includes `en.json`, `tr.json`, metadata and additional files. The Mac app exports only mapped files. Translation contents remain intact; metadata and other unmatched files are excluded and listed in a warning.
 
 ## Try custom filenames
 

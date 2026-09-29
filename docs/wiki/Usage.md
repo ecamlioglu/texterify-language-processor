@@ -9,7 +9,7 @@
 3. Choose **ZIP’i indir** to save. The first save asks for a destination folder.
 4. Select **Finder’da göster** to reveal the archive. Use **Yeni dosya** for another export.
 
-The app renames files inside the archive. It does not translate strings or change translation contents. Unmatched files are preserved, including folder paths. Nested matching files are renamed in their existing folders.
+The app renames files inside the archive. It does not translate strings or change translation contents. Only mapped files are included in the output ZIP. Unmapped languages, metadata, and helper files are excluded. A warning lists them before you save and on the saved-result screen. Add their mappings and reload the preview if you want to include them. If no file matches, the app does not create an output. Nested matching files are renamed in their existing folders.
 
 The original ZIP is never changed. Existing outputs are not overwritten: the default is a new numbered filename. For example, `lang_files_17_09.zip` can become `lang_files_17_09_1.zip`.
 

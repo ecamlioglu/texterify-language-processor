@@ -11,7 +11,7 @@
 | Config cannot be saved/imported | Resolve the validation message. Source codes and targets must be unique; targets cannot contain paths. |
 | Cannot save to a folder | Select the folder again in **Tercihler**, or use **Farklı kaydet…** with a writable folder. |
 | Output already exists | Use a numbered output or another name. Existing files are preserved. |
-| Update check fails | Check internet access and retry. The [macOS release page](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.0) also provides manual downloads. |
+| Update check fails | Check internet access and retry. The [macOS release page](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.1) also provides manual downloads. |
 | Update waits to restart | Finish processing and save/close the mappings editor. |
 
 ## Archive limits

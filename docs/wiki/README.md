@@ -2,7 +2,7 @@
 
 A guide to the native menu bar app, with a separate path for the legacy Python tool. These pages live in the repository so documentation changes can be reviewed and versioned alongside the code.
 
-[Download the Mac app](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.0) · [Repository home](../../README.md)
+[Download the Mac app](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.1) · [Repository home](../../README.md)
 
 ## Use the Mac app
 

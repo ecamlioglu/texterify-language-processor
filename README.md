@@ -4,7 +4,7 @@
 
 A small native macOS app that lives in your menu bar. Drop in a Texterify ZIP, preview the filename changes, and save an archive with the names your project expects. A soft Liquid Glass interface keeps the everyday workflow simple.
 
-[**Download for macOS**](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.0) · [User wiki](docs/wiki/README.md) · [Report an issue](https://github.com/ecamlioglu/texterify-language-processor/issues/new/choose)
+[**Download for macOS**](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.1) · [User wiki](docs/wiki/README.md) · [Report an issue](https://github.com/ecamlioglu/texterify-language-processor/issues/new/choose)
 
 [![macOS 27+](https://img.shields.io/badge/macOS-27%2B-7563BC)](docs/wiki/Installation.md)
 [![Apple Silicon](https://img.shields.io/badge/Apple_Silicon-arm64-7563BC)](docs/wiki/Installation.md)
@@ -13,7 +13,7 @@ A small native macOS app that lives in your menu bar. Drop in a Texterify ZIP, p
 
 ## Install and start
 
-1. Download **Texterify-Renamer-1.1.0-arm64.zip** from the [macOS release](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.0).
+1. Download **Texterify-Renamer-1.1.1-arm64.zip** from the [macOS release](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.1).
 2. Unzip it and move **Texterify Renamer.app** into **Applications**.
 3. Open the app and click its menu bar icon.
 
@@ -27,7 +27,7 @@ The release is **Developer ID signed and notarized by Apple**. It requires **mac
 2. Review the proposed renames. Open **Eşleştirmeler** to adapt the mappings to your project.
 3. Select **ZIP’i indir**, choose an output folder when prompted, and use **Finder’da göster** to reveal the result.
 
-For example, mapping `en` to `english.json` turns `en.json` into `english.json` inside the output ZIP. Translation contents stay the same; unmatched files keep their names and folders. The source ZIP is preserved.
+For example, mapping `en` to `english.json` turns `en.json` into `english.json` inside the output ZIP. Translation contents stay the same. Only files with a matching mapping are included. Unmapped languages, metadata, and helper files are left out, with a warning before and after saving. The source ZIP is preserved.
 
 ## Made for a small, repeatable task
 

@@ -20,6 +20,6 @@ The app reads a dedicated [macOS feed](https://github.com/ecamlioglu/texterify-l
 
 Public app releases use `macos-v<version>` tags. Both the feed and archives have Sparkle Ed25519 signatures. Public apps are also Developer ID signed and notarized by Apple.
 
-The early 1.0.0 build has no updater. Quit it and replace it with [1.1.0](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.0) once; later releases can use in-app updates.
+The early 1.0.0 build has no updater. Quit it and replace it with [1.1.1](https://github.com/ecamlioglu/texterify-language-processor/releases/tag/macos-v1.1.1) once; later releases can use in-app updates.
 
 Maintainers: see the [release guide](../../macos/README.md).
