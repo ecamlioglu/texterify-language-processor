@@ -6,8 +6,8 @@
   <key>CFBundleDisplayName</key><string>Texterify Renamer</string>
   <key>CFBundleExecutable</key><string>TexterifyRenamer</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>1.1.0</string>
-  <key>CFBundleVersion</key><string>4</string>
+  <key>CFBundleShortVersionString</key><string>1.1.1</string>
+  <key>CFBundleVersion</key><string>5</string>
   <key>SUFeedURL</key><string>https://github.com/ecamlioglu/texterify-language-processor/releases/download/macos-updates/appcast.xml</string>
   <key>SUPublicEDKey</key><string>gHNfVvI9I06Fy1Ha8bpzQ2HP2r9MqtLFeaGU0sHKBJo=</string>
   <key>SURequireSignedFeed</key><true/>

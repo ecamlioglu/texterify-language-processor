@@ -1,0 +1,5 @@
+{
+  "english.json": "{\"greeting\":\"Hello\"}",
+  "nested/turkish.json": "{\"greeting\":\"Merhaba, dünya 🌿\"}",
+  "french.json": "Bonjour"
+}

@@ -77,6 +77,7 @@ struct PanelView: View {
                 Text("Hazır. Kaydedildi.").font(.system(size: 24, weight: .medium, design: .rounded))
                 Text(saved.lastPathComponent).font(.system(size: 12, design: .monospaced)).textSelection(.enabled)
                 Text(saved.deletingLastPathComponent().lastPathComponent).font(.caption).foregroundStyle(.secondary)
+                if let plan = model.plan { excludedNotice(plan, saved: true) }
                 Button("Finder’da göster", action: model.reveal).buttonStyle(.glassProminent).controlSize(.large)
             }.frame(maxWidth: .infinity).padding(.vertical, 14)
         } else if let plan = model.plan {
@@ -115,7 +116,7 @@ struct PanelView: View {
             }
             Button { expanded.toggle() } label: {
                 HStack {
-                    Text("\(plan.renamed.count)").font(.system(size: 32, weight: .light, design: .rounded))
+                    Text("\(plan.files.count)").font(.system(size: 32, weight: .light, design: .rounded))
                     Text("dosya eşleşti").font(.callout).foregroundStyle(.secondary)
                     Spacer()
                     Image(systemName: expanded ? "chevron.up" : "chevron.down").font(.caption).foregroundStyle(.secondary)
@@ -139,6 +140,7 @@ struct PanelView: View {
             if !plan.preserved.isEmpty {
                 Text("\(plan.preserved.count) dosya olduğu gibi korunur.").font(.caption).foregroundStyle(.secondary)
             }
+            excludedNotice(plan)
             VStack(alignment: .leading, spacing: 6) {
                 Eyebrow(text: "ÇIKTI")
                 Text(model.destination?.lastPathComponent ?? plan.suggestedName).font(.system(size: 12, design: .monospaced)).textSelection(.enabled)
@@ -151,6 +153,23 @@ struct PanelView: View {
                 GlassIconButton(title: "Farklı kaydet…", symbol: "folder") { model.saveAs() }
                     .controlSize(.large)
             }
+        }
+    }
+
+    @ViewBuilder private func excludedNotice(_ plan: ProcessingPlan, saved: Bool = false) -> some View {
+        if !plan.excludedFiles.isEmpty {
+            VStack(alignment: .leading, spacing: 8) {
+                Label("\(plan.excludedFiles.count) dosyanın eşleştirmesi yok", systemImage: "exclamationmark.triangle")
+                    .font(.callout.weight(.medium)).foregroundStyle(.orange)
+                Text(saved ? "Bu dosyalar çıktı ZIP’ine eklenmedi." : "Bu dosyalar çıktı ZIP’ine eklenmeyecek. Eklemek için eşleştirmeleri düzenle.")
+                    .font(.caption).fixedSize(horizontal: false, vertical: true)
+                ScrollView {
+                    Text(plan.excludedFiles.joined(separator: "\n"))
+                        .font(.system(size: 11, design: .monospaced)).textSelection(.enabled)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }.frame(height: min(CGFloat(plan.excludedFiles.count) * 17, 85))
+            }.frame(maxWidth: .infinity, alignment: .leading).padding(12)
+                .background(.orange.opacity(0.07), in: .rect(cornerRadius: 14))
         }
     }
 

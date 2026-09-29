@@ -39,17 +39,17 @@ final class ProcessorTests: XCTestCase {
         return result
     }
 
-    func testNestedUnicodeAndPreservedFiles() throws {
+    func testNestedUnicodeExcludesUnmappedFilesAndEmptyDirectories() throws {
         let source = try zip([("nested/EN.json", "{\"hello\":\"Hello\"}"), ("tr.json", "İçerik değişmez 🌿"), ("assets/info.txt", "preserve"), ("empty/", "")])
         let original = try Data(contentsOf: source)
         let plan = try Processor.inspect(source, config: config)
         XCTAssertEqual(plan.renamed.count, 2)
-        XCTAssertEqual(plan.preserved.count, 1)
+        XCTAssertEqual(plan.preserved.count, 0)
         let output = directory.appendingPathComponent("output.zip")
         try Processor.export(plan, to: output)
-        XCTAssertEqual(try contents(output), ["nested/english.json": Data("{\"hello\":\"Hello\"}".utf8), "turkish.json": Data("İçerik değişmez 🌿".utf8), "assets/info.txt": Data("preserve".utf8)])
+        XCTAssertEqual(try contents(output), ["nested/english.json": Data("{\"hello\":\"Hello\"}".utf8), "turkish.json": Data("İçerik değişmez 🌿".utf8)])
         XCTAssertEqual(try Data(contentsOf: source), original)
-        XCTAssertNotNil(try Archive(url: output, accessMode: .read)["empty/"])
+        XCTAssertNil(try Archive(url: output, accessMode: .read)["empty/"])
     }
 
     func testNoMatchAndCaseSensitivity() throws {
@@ -58,6 +58,69 @@ final class ProcessorTests: XCTestCase {
         XCTAssertThrowsError(try Processor.inspect(source, config: config))
         config.caseSensitive = false
         XCTAssertEqual(try Processor.inspect(source, config: config).renamed.count, 1)
+    }
+
+    func testUnmappedLanguagesAreExcludedWithoutShiftingPayloads() throws {
+        let source = try zip([("de.json", "excluded first"), ("en.json", "English 🌿"),
+                              ("nested/pt-BR.json", "excluded middle"), ("tr.json", "Türkçe"),
+                              ("zh_Hant_TW.json", "excluded last"), ("_metadata.json", "metadata"),
+                              ("assets/info.txt", "helper"), ("fra.json", "French")])
+        let original = try Data(contentsOf: source)
+        let plan = try Processor.inspect(source, config: config)
+        XCTAssertEqual(plan.excludedFiles, ["_metadata.json", "assets/info.txt", "de.json", "fra.json", "nested/pt-BR.json", "zh_Hant_TW.json"])
+        XCTAssertEqual(plan.renamed.count, 2)
+        XCTAssertEqual(plan.preserved.count, 0)
+        let output = directory.appendingPathComponent("filtered.zip")
+        try Processor.export(plan, to: output)
+        XCTAssertEqual(try contents(output), ["english.json": Data("English 🌿".utf8),
+                                             "turkish.json": Data("Türkçe".utf8)])
+        XCTAssertEqual(try Data(contentsOf: source), original)
+
+        config.mappings["de"] = "german.json"
+        let updated = try Processor.inspect(source, config: config)
+        XCTAssertFalse(updated.excludedFiles.contains("de.json"))
+        let updatedOutput = directory.appendingPathComponent("mapped.zip")
+        try Processor.export(updated, to: updatedOutput)
+        XCTAssertEqual(try contents(updatedOutput)["german.json"], Data("excluded first".utf8))
+    }
+
+    func testUnmappedLanguagesRespectCaseSensitivityAndExplainNoMatch() throws {
+        config.caseSensitive = true
+        let source = try zip([("EN.json", "upper"), ("tr.json", "Turkish")])
+        let plan = try Processor.inspect(source, config: config)
+        XCTAssertEqual(plan.excludedFiles, ["EN.json"])
+        let output = directory.appendingPathComponent("case.zip")
+        try Processor.export(plan, to: output)
+        XCTAssertEqual(try contents(output), ["turkish.json": Data("Turkish".utf8)])
+        let unmatched = try zip([("de.json", "German"), ("pt-BR.json", "Portuguese")], name: "unmatched.zip")
+        XCTAssertThrowsError(try Processor.inspect(unmatched, config: config)) { error in
+            XCTAssertTrue(error.localizedDescription.contains("çıktı oluşturulmadı"))
+            XCTAssertTrue(error.localizedDescription.contains("de.json"))
+            XCTAssertTrue(error.localizedDescription.contains("pt-BR.json"))
+        }
+    }
+
+    func testExcludedLanguageStillRequiresValidCRC() throws {
+        let source = try zip([("de.json", "bad"), ("en.json", "good")])
+        var data = try Data(contentsOf: source)
+        let central = try XCTUnwrap(data.range(of: Data([0x50, 0x4b, 0x01, 0x02])))
+        data[central.lowerBound + 16] ^= 0xff
+        try data.write(to: source)
+        XCTAssertThrowsError(try Processor.inspect(source, config: config))
+    }
+
+    func testExplicitIdentityAndHelperMappingsAreIncluded() throws {
+        config.mappings = ["en": "en.json", "_metadata": "metadata.json"]
+        let source = try zip([("nl.json", "omit"), ("en.json", "same name"), ("_metadata.json", "explicit")])
+        let plan = try Processor.inspect(source, config: config)
+        XCTAssertEqual(plan.excludedFiles, ["nl.json"])
+        let output = directory.appendingPathComponent("identity.zip")
+        try Processor.export(plan, to: output)
+        XCTAssertEqual(try contents(output), ["en.json": Data("same name".utf8), "metadata.json": Data("explicit".utf8)])
+        config.mappings = ["en": "en.json"]
+        let identityOnly = try Processor.inspect(source, config: config)
+        XCTAssertEqual(identityOnly.files.count, 1)
+        XCTAssertTrue(identityOnly.renamed.isEmpty)
     }
 
     func testRenameChainsUseOriginalNames() throws {
@@ -71,9 +134,8 @@ final class ProcessorTests: XCTestCase {
 
     func testCollisionsAndUnsafePathsAreRejected() throws {
         for (index, entries) in [
-            [("en.json", "a"), ("english.json", "b")],
             [("en.json", "a"), ("en.txt", "b")],
-            [("en.json", "a"), ("english.json/file.txt", "b")],
+            [("en.json", "a"), ("english.json/tr.json", "b")],
             [("en.json", "a"), ("../escape", "b")],
             [("en.json", "a"), ("/absolute", "b")],
             [("en.json", "a"), ("EN.json", "b")]
@@ -181,14 +243,14 @@ final class ProcessorTests: XCTestCase {
         XCTAssertEqual(try config.encoded(), try repositoryConfig.encoded())
     }
 
-    func testSharedPythonSwiftContract() throws {
+    func testSharedFixtureWithMacOnlyMappedOutput() throws {
         let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
         let fixture = root.appendingPathComponent("tests/fixtures")
         let config = try Configuration(data: Data(contentsOf: fixture.appendingPathComponent("config.json")))
         let plan = try Processor.inspect(fixture.appendingPathComponent("export.zip"), config: config)
         let output = directory.appendingPathComponent("contract.zip")
         try Processor.export(plan, to: output)
-        let expected = try JSONDecoder().decode([String: String].self, from: Data(contentsOf: fixture.appendingPathComponent("expected.json")))
+        let expected = try JSONDecoder().decode([String: String].self, from: Data(contentsOf: fixture.appendingPathComponent("expected-macos.json")))
         XCTAssertEqual(try contents(output), expected.mapValues { Data($0.utf8) })
     }
 }

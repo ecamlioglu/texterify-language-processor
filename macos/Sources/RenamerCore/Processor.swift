@@ -18,6 +18,7 @@ public struct ProcessingPlan: Sendable {
     public let suggestedName: String
     public let inputBytes: Int
     public let absentLanguages: [String]
+    public let excludedFiles: [String]
     fileprivate let digest: SHA256.Digest
     public var renamed: [PlannedFile] { files.filter { !$0.isDirectory && $0.renamed } }
     public var preserved: [PlannedFile] { files.filter { !$0.isDirectory && !$0.renamed } }
@@ -36,6 +37,7 @@ public enum Processor {
         let archive = try validatedArchive(data)
         var files = [PlannedFile](), sources = Set<String>(), targets = Set<String>(), seenLanguages = Set<String>()
         var declared: UInt64 = 0
+        var excludedFiles = [String]()
         for entry in archive {
             try checkCancellation(cancelled)
             guard entry.type != .symlink else { throw RenamerError("Arşiv sembolik bağlantı içeriyor: \(entry.path)") }
@@ -47,15 +49,21 @@ public enum Processor {
             guard entry.uncompressedSize <= maxExpandedBytes - declared else { throw RenamerError("Arşivin açılmış boyutu 500 MB sınırını aşıyor.") }
             declared += entry.uncompressedSize
             var target = source
+            var excluded = directory
             if !directory {
                 let name = (source as NSString).lastPathComponent
                 if let mapped = config.target(for: name) {
                     let parent = (source as NSString).deletingLastPathComponent
                     target = parent.isEmpty ? mapped : parent + "/" + mapped
                     for (language, mappedName) in config.mappings where mappedName == mapped { seenLanguages.insert(language) }
+                } else {
+                    excludedFiles.append(source)
+                    excluded = true
                 }
                 try read(entry, in: archive, cancelled: cancelled) { _ in }
             }
+            // Validate every source entry, including CRC, before omitting it.
+            if excluded { continue }
             let targetKey = Configuration.canonical(target.trimmingCharacters(in: CharacterSet(charactersIn: "/")))
             guard targets.insert(targetKey).inserted else { throw RenamerError("Dosyalar aynı hedefe gidiyor: \(target)") }
             files.append(PlannedFile(source: source, target: target, size: entry.uncompressedSize, isDirectory: directory))
@@ -68,11 +76,15 @@ public enum Processor {
                 parent = (parent as NSString).deletingLastPathComponent
             }
         }
-        guard files.contains(where: { !$0.isDirectory && $0.renamed }) else {
+        guard !files.isEmpty else {
+            if !excludedFiles.isEmpty {
+                throw RenamerError("Eşleşen dosya bulunamadı; çıktı oluşturulmadı. Eşleştirmesi olmayan dosyalar: \(excludedFiles.sorted().joined(separator: ", ")). Eşleştirmeleri düzenleyip tekrar dene.")
+            }
             throw RenamerError("Yeniden adlandırılacak dosya bulunamadı. ZIP’i ve dil eşleştirmelerini kontrol et.")
         }
         return ProcessingPlan(input: input, files: files, suggestedName: config.outputName(), inputBytes: data.count,
-                              absentLanguages: Set(config.mappings.keys).subtracting(seenLanguages).sorted(), digest: SHA256.hash(data: data))
+                              absentLanguages: Set(config.mappings.keys).subtracting(seenLanguages).sorted(),
+                              excludedFiles: excludedFiles.sorted(), digest: SHA256.hash(data: data))
     }
 
     /// Publishes with an exclusive hard link on the destination volume: an existing file is never replaced.
@@ -126,10 +138,11 @@ public enum Processor {
     private static func writeArchive(_ source: Archive, plan: ProcessingPlan, output: URL, stage: URL,
                                      cancelled: () -> Bool, progress: (Double) -> Void) throws {
         let archive = try Archive(url: output, accessMode: .create)
-        let entries = Array(source)
+        // Filtering changes output positions. Resolve by original path, never by output index.
+        let entries = Dictionary(uniqueKeysWithValues: source.map { ($0.path, $0) })
         for (index, file) in plan.files.enumerated() {
             try checkCancellation(cancelled)
-            let entry = entries[index]
+            guard let entry = entries[file.source] else { throw RenamerError("Kaynak dosya bulunamadı: \(file.source)") }
             if file.isDirectory {
                 try archive.addEntry(with: file.target, type: .directory, uncompressedSize: Int64(0)) { _, _ in Data() }
             } else {
